@@ -4,31 +4,31 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from constants import all as cons
+from models.attribute import Attribute
 from time import sleep
 
 
 def execute(all_seq):
 
     for seq in all_seq:
-        print(seq.desc)
-
         # if any click on previous elements in this file failed it will skip next sections
-        failed_clicks = filter(lambda s: s.fileId == seq.fileId and s.sectionid < seq.sectionid and not s.success and s.type == cons.CLICK, all_seq)
+        failed_clicks = filter(lambda s: s.file_id == seq.file_id and s.section_id < seq.section_id and not s.success and s.type == cons.CLICK, all_seq)
 
         if len(list(failed_clicks)) > 0:
-            print('preskoči: ', seq.desc)
+            print('skip for failed click: ', seq.desc)
         else:
-            sleep(0.2)
             execute_single(seq)
+            sleep(seq.wait)
 
     # Failed
     failed = filter(lambda s: not s.success, all_seq)
-    print('Success: ', list(all_seq) - len(list(failed)), '/', len(list(all_seq)))
-
+    count_all = len(list(all_seq))
+    count_failed = len(list(failed))
+    print('Success: ', count_all - count_failed, '/', count_all)
 
 
 def execute_single(seq):
-    print("Iščem: ", seq.desc)
+    print("Locating... ", seq.desc)
 
     try:
         element = choose(seq)
@@ -41,25 +41,26 @@ def execute_single(seq):
             if len(seq.text) > 0:
                 element.send_keys(seq.text)
     except:
-        print("NAPAKA: Nisem našel")
+        print("ERROR: Not found")
 
 
 def choose(s):
     wait = WebDriverWait(cons.DRIVER, 10)
-    if len(s.id) > 0:
-        return wait.until(EC.visibility_of_element_located((By.ID, s.id)))
 
-    elif len(s.name) > 0:
-        return wait.until(EC.visibility_of_element_located((By.NAME, s.name)))
+    if s.attribute_id == Attribute.ID:
+        return wait.until(EC.visibility_of_element_located((By.ID, s.attribute_value)))
 
-    elif len(s.className) > 0:
-        return wait.until(EC.visibility_of_element_located((By.CLASS_NAME, s.className)))
+    elif s.attribute_id == Attribute.NAME:
+        return wait.until(EC.visibility_of_element_located((By.NAME, s.attribute_value)))
 
-    elif len(s.xpath) > 0:
-        return wait.until(EC.visibility_of_element_located((By.XPATH, s.xpath)))
+    elif s.attribute_id == Attribute.CLASS:
+        return wait.until(EC.visibility_of_element_located((By.CLASS_NAME, s.attribute_value)))
 
-    elif len(s.cssSelector) > 0:
-        return wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, s.cssSelector)))
+    elif s.attribute_id == Attribute.XPATH:
+        return wait.until(EC.visibility_of_element_located((By.XPATH, s.attribute_value)))
 
-    elif len(s.jsFunction) > 0:
-        return s.jsFunction
+    elif s.attribute_id == Attribute.CSS_SELECTOR:
+        return wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, s.attribute_value)))
+
+    elif s.attribute_id == Attribute.JS_FUNCTION:
+        return s.attribute_value

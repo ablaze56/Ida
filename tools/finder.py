@@ -1,19 +1,33 @@
-# Finds json files in .\SEQUENCE folder
-# Puts settings.json to first position
+# Finds json files in .\SEQUENCE subfolders
+# Puts settings.json to first position, commons after that commons
+# They are split for order control - sequences must be sorted!
 
 
-from os import listdir
 import constants.all as c
-from os.path import isfile, join
+import os.path
+
 
 def read():
-    all_files = [f for f in listdir(c.FOLDER) if isfile(join(c.FOLDER, f))]
-    selection = []
-    for f in all_files:
-        if f.endswith('json'):
-            if f == 'settings.json':
-                selection.insert(0, f)
-            else:
-                selection.append(f)
+    settings = []
+    commons = []
+    sequences = []
 
+    selection = []
+
+    for path, _, files in os.walk(c.FOLDER):
+        for f in files:
+            if f.endswith('json'):
+                full_path = os.path.join(path, f)
+                if 'settings' in path:
+                    settings.append(full_path)
+                elif 'commons' in path:
+                    commons.append(full_path)
+                else:
+                    sequences.append(full_path)
+
+    selection.extend(settings)
+    selection.extend(commons)
+
+    sequences.sort()
+    selection.extend(sequences)
     return selection

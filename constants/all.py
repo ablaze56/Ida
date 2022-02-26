@@ -1,22 +1,27 @@
+from pathlib import Path
 
-FOLDER = '.\\sequence'
+# ali dela na winsih
+FOLDER = Path('./scenario')
 URL = ''
 
 # types of sequences
 CLICK = 'click'
 INPUT = 'input'
-
+FUNCTION = 'function'
+COMMON = 'common'
 
 # json elements
 
-SETTINGS_FILE_NAME = 'settings.json'
+SEARCH = 'search'
 
+SKIP = 'skip'
 
 DESC = 'desc'
 ID = 'id'
 NAME = 'name'
 CLASS = 'class'
 TYPE = 'type'
-TEXT = 'text'
+INSERT_TEXT = 'insertText'
 XPATH = 'xpath'
-CSS_SELECTOR = 'cssSelector'
+CSS_SELECTOR = 'css_selector'
+WAIT = 'wait'
