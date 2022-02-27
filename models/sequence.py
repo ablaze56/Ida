@@ -21,7 +21,7 @@ def get_attribute(a):
         elif a == c.XPATH:
             return Attribute.XPATH
         else:
-            print('Unknown scenario attribute: ', a)
+            print('Unknown library attribute: ', a)
     else:
         return a
 
@@ -36,7 +36,7 @@ def get_type(t):
         elif t == c.FUNCTION:
             return Type.FUNCTION
         else:
-            print("Unknown scenario type: ", t)
+            print("Unknown library type: ", t)
     else:
         return t
 

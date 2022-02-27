@@ -4,7 +4,7 @@ from selenium import webdriver
 DRIVER: webdriver
 
 # ali dela na winsih
-FOLDER = Path('./scenario')
+FOLDER = Path('./library')
 URL = ''
 
 # types of sequences

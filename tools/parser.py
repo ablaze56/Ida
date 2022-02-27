@@ -19,7 +19,7 @@ def parse(names):
         with open(n) as f:
             data = json.load(f)
 
-            if 'scenario/settings' in n:
+            if 'library/settings' in n:
                 c.URL = data['url']
             else:
                 if 'commons' in data:

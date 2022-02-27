@@ -1,4 +1,4 @@
-# common is a reusable scenario
+# common is a reusable library
 
 
 class Common:
