@@ -1,0 +1,43 @@
+{
+	"seq": [{
+			"desc": "Go to contact",
+			"type": "click",
+			"search": [
+				"xpath",
+				"/html/body/div[1]/div[1]/section/div[1]/div/a[2]"
+			],
+			"insertText": "",
+			"wait": 0
+		},
+		{
+			"desc": "Enter subject",
+			"type": "input",
+			"search": [
+				"id",
+				"wpforms-1518-field_3"
+			],
+			"insertText": "Just wanted to say hi",
+			"wait": 0
+		},
+		{
+			"desc": "Enter message",
+			"type": "input",
+			"search": [
+				"id",
+				"wpforms-1518-field_4"
+			],
+			"insertText": "You can also connect with me on the LinkedIn. Please find button bellow.",
+			"wait": 0
+		},
+		{
+			"desc": "Submit",
+			"type": "click",
+			"search": [
+				"name",
+				"wpforms[submit]"
+			],
+			"insertText": "",
+			"wait": 0
+		}
+	]
+}

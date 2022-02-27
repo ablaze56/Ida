@@ -1,0 +1,43 @@
+{
+	"seq": [{
+			"desc": "Accept cookies",
+			"type": "click",
+			"search": [
+				"xpath",
+				"//*[@id=\"cookie_action_close_header\"]"
+			],
+			"insertText": "",
+			"wait": 0
+		},
+		{
+			"desc": "Go to references",
+			"type": "click",
+			"search": [
+				"xpath",
+				"/html/body/div[1]/div[1]/section/div[1]/div/a[1]"
+			],
+			"insertText": "",
+			"wait": 0
+		},
+		{
+			"desc": "Get to know Albert",
+			"type": "click",
+			"search": [
+				"xpath",
+				"html/body/div[1]/div[2]/main/section[2]/div/div[2]/div[1]/div/div[1]/img"
+			],
+			"insertText": "",
+			"wait": 10
+		},
+		{
+			"desc": "Return home",
+			"type": "click",
+			"search": [
+				"xpath",
+				"/html/body/div[1]/div[1]/div/header/div/div[1]/div/div/a/img"
+			],
+			"insertText": "",
+			"wait": 0
+		}
+	]
+}

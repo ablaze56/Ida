@@ -13,3 +13,4 @@ class Attribute(Enum):
     XPATH = 4
     CSS_SELECTOR = 5
     JS_FUNCTION = 6
+    LINK_TEXT = 7

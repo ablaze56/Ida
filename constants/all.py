@@ -15,6 +15,7 @@ INPUT = 'input'
 FUNCTION = 'function'
 COMMON = 'common'
 USER_CONSTANT = 'userConstant'
+LINK_TEXT = 'linkText'
 
 # json elements
 

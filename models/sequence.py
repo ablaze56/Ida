@@ -22,6 +22,8 @@ def get_attribute(a):
             return Attribute.XPATH
         elif a == c.USER_CONSTANT:
             return Attribute.USER_CONSTANT
+        elif a == c.LINK_TEXT:
+            return Attribute.LINK_TEXT
         else:
             print('Unknown library attribute: ', a)
     else:

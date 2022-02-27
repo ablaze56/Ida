@@ -1,12 +1,11 @@
-# Seznam vseh taskov, ki se delijo naprej po programih
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from constants import all as cons
-from models.sequence import Sequence
 from models.attribute import Attribute
 from time import sleep
+from models.type import Type
 
 AUTO_COUNTER = 1000
 AUTO_SEQ = []
@@ -96,11 +95,13 @@ def execute_single(seq):
         seq.success = True
         print("Ok")
 
-        if seq.type == cons.CLICK:
+        if seq.type == Type.CLICK:
             element.click()
-        elif seq.type == cons.INPUT:
-            if len(seq.text) > 0:
-                element.send_keys(seq.text)
+        elif seq.type == Type.INPUT:
+            if len(seq.insert_text) > 0:
+                element.send_keys(seq.insert_text)
+        else:
+            print("seq.type: ", seq.type)
     except:
 
         if is_returned_http_error():
@@ -126,6 +127,9 @@ def choose(s):
 
     elif s.attribute_id == Attribute.CSS_SELECTOR:
         return wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, s.attribute_value)))
+
+    elif s.attribute_id == Attribute.LINK_TEXT:
+        return wait.until(EC.visibility_of_element_located((By.LINK_TEXT, s.attribute_value)))
 
     elif s.attribute_id == Attribute.JS_FUNCTION:
         return s.attribute_value

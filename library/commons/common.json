@@ -1,16 +1,4 @@
 {
   "commons": [
-    {
-      "skip": false,
-      "id": "confirmButton",
-      "desc": "",
-      "type": "click",
-      "search": [
-        "xpath",
-        "//*[contains(@id, 'btnConfirm')]"
-      ],
-      "insertText": "",
-      "wait": 0
-    }
   ]
 }

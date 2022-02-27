@@ -187,3 +187,9 @@ _Use of Common in Sequences:_
       "desc": "Save new customer",
       "common_id": "confirmButton"
     }
+
+### Example
+Please check example folder for reference. You can even invert
+folders: 
+- rename folder example to library
+- rename folder library to example
