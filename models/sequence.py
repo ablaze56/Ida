@@ -53,5 +53,6 @@ class Sequence:
 
         self.insert_text = insert_text
         self.wait = wait
+        self.findAll = False
         self.success = False
 

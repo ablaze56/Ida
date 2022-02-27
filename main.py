@@ -8,7 +8,7 @@ def main():
     # imports settings and sequences from .\scenario folder and parse them into objects
     data = read()
     sequences = parse(data)
-  #  Web_client()
+    Web_client()
     execute(sequences)
 
 

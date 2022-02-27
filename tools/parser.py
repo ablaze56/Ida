@@ -73,6 +73,9 @@ def parse_sequence(data):
                          attribute_id=s[c.SEARCH][0], attribute_value=s[c.SEARCH][1], insert_text=json_text,
                          wait=json_wait)
 
+            # it should run differently - always checking and clicking on menu items
+            n.FindAll = n.findAll if 'findAll' in s else False
+
         SECTION_ID += 1
         sequences.append(n)
 

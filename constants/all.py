@@ -1,4 +1,7 @@
 from pathlib import Path
+from selenium import webdriver
+
+DRIVER: webdriver
 
 # ali dela na winsih
 FOLDER = Path('./scenario')
