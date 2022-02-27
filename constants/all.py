@@ -7,11 +7,14 @@ DRIVER: webdriver
 FOLDER = Path('./library')
 URL = ''
 
+USER_CONSTANTS = []
+
 # types of sequences
 CLICK = 'click'
 INPUT = 'input'
 FUNCTION = 'function'
 COMMON = 'common'
+USER_CONSTANT = 'userConstant'
 
 # json elements
 

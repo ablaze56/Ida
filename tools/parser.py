@@ -20,7 +20,7 @@ def parse(names):
             data = json.load(f)
 
             if 'library/settings' in n:
-                c.URL = data['url']
+                parse_settings(data)
             else:
                 if 'commons' in data:
                     parse_common(data['commons'])
@@ -30,6 +30,22 @@ def parse(names):
                 FILE_ID += 1
 
     return res
+
+
+def parse_settings(data):
+    c.URL = data['url']
+
+    # optional user defined constants
+    if 'constants' in data:
+        cons = data['constants']
+        for con in cons:
+            if 'name' not in con and 'value' not in con:
+                print('ERROR - Constants must contain name and value keys.')
+                continue
+
+            name = con['name']
+            value = con['value']
+            c.USER_CONSTANTS.append([name, value])
 
 
 def parse_sequence(data):
@@ -50,6 +66,19 @@ def parse_sequence(data):
 
         # setting default values for non mandatory elements
         json_text = s[c.INSERT_TEXT] if c.INSERT_TEXT in s else ''
+
+        # replace text with user defined constant if found
+        if '#constant:' in json_text:
+            json_text = json_text.replace('#constant:', '')
+            if json_text[0] == ' ':
+                json_text = json_text[1:]
+
+            f = filter(lambda co: co[0] == json_text, c.USER_CONSTANTS)
+            found = list(f)
+            if len(found) > 0:
+                json_text = found[0][1]
+                print('text replace with constant: ', json_text)
+
         json_wait = s[c.WAIT] if c.WAIT in s else 0.1
 
         n: Sequence

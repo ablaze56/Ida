@@ -1,5 +1,6 @@
 # differentiate between the attributes of dom elements
 # needed to perform search
+# user_constant is defined in settings and saved to constants
 
 
 from enum import Enum

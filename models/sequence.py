@@ -20,6 +20,8 @@ def get_attribute(a):
             return Attribute.CLASS
         elif a == c.XPATH:
             return Attribute.XPATH
+        elif a == c.USER_CONSTANT:
+            return Attribute.USER_CONSTANT
         else:
             print('Unknown library attribute: ', a)
     else:

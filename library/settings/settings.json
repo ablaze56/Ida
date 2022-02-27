@@ -1,3 +1,13 @@
 {
-	"url": "https://www.nb3.si/"
+	"url": "https://www.nb3.si/",
+	"constants": [
+		{
+			"name": "username",
+			"value": "myUsername"
+		},
+		{
+			"name": "password",
+			"value": "myPassword"
+		}
+	]
 }

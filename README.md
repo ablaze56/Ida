@@ -30,9 +30,25 @@ Go to \dist\library
 
 Go to \dist\library\settings\, open **settings.json** and enter url:
 
-`{
 	"url": "https://www.nb3.si"
-}`
+
+
+Furthermore, you can add your own custom constants, i.e. username, password or whatever you need.
+You can call constants in sequences with keyword **#constant:** before name of the constant.
+
+	"constants": [
+		{
+			"name": "username",
+			"value": "myUsername"
+		},
+		{
+			"name": "password",
+			"value": "myPassword"
+		}
+	]
+
+
+
 
 ### Sequences
 
@@ -50,7 +66,7 @@ valid json format of the file (you can always validate it online).
 First Ida will open website from settings and begin running test sequences.
 Following 00100_login.json example you create sequence for each action, i.e.:
 
-` {
+`{
 	"desc": "Login: username",
 	"type": "input",
 	"search": [
@@ -59,6 +75,20 @@ Following 00100_login.json example you create sequence for each action, i.e.:
 	],
 	"insertText": "myUsername"
 }`
+
+
+Or, using constant username you can create sequence like this:
+
+`{
+	"desc": "Login: username",
+	"type": "input",
+	"search": [
+		"name",
+		"Username"
+	],
+	"insertText": "#constant:password"
+}`
+
 
 Each sequence file must contain only 1 array of sequences and are added 
 in the order of execution in the "seq" key. If your website requires login,
@@ -149,8 +179,6 @@ _Example of Common_
       ],
       "wait": 0
     }
-
-
 
 
 _Use of Common in Sequences:_

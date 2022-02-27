@@ -5,7 +5,7 @@ from tools.execute import execute
 
 
 def main():
-    # imports settings and sequences from .\scenario folder and parse them into objects
+    # imports settings and sequences from .\library folder and parse them into objects
     data = read()
     sequences = parse(data)
     Web_client()
