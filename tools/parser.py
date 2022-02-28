@@ -19,7 +19,7 @@ def parse(names):
         with open(n) as f:
             data = json.load(f)
 
-            if 'library/settings' in n:
+            if 'url' in data:
                 parse_settings(data)
             else:
                 if 'commons' in data:
@@ -34,6 +34,7 @@ def parse(names):
 
 def parse_settings(data):
     c.URL = data['url']
+    print('parsed: ', c.URL)
 
     # optional user defined constants
     if 'constants' in data:
@@ -65,13 +66,14 @@ def parse_sequence(data):
             break
 
         # setting default values for non mandatory elements
-        json_text = s[c.INSERT_TEXT] if c.INSERT_TEXT in s else ''
+        json_text = str(s[c.INSERT_TEXT] if c.INSERT_TEXT in s else ' ')
 
         # replace text with user defined constant if found
-        if '#constant:' in json_text:
-            json_text = json_text.replace('#constant:', '')
-            if json_text[0] == ' ':
-                json_text = json_text[1:]
+        if len(json_text) > 1:
+            if '#constant:' in json_text:
+                json_text = json_text.replace('#constant:', '')
+                if json_text[0] == ' ':
+                    json_text = json_text[1:]
 
             f = filter(lambda co: co[0] == json_text, c.USER_CONSTANTS)
             found = list(f)

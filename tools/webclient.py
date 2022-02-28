@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from constants import all as c
 
 
-class Web_client:
+class WebClient:
     def __init__(self):
         s = Service(ChromeDriverManager().install())
         c.DRIVER = webdriver.Chrome(service=s)
