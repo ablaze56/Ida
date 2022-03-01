@@ -64,10 +64,11 @@ def execute_single(seq):
 
 def split_single_to_multiple(s):
     global AUTO_SEQ
-    print('split_single_to_multiple')
+    print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
     similar = find_similar(s)
     AUTO_SEQ.extend(similar)
     AUTO_SEQ.sort(key=lambda x: x.attribute_value)
+
     print(AUTO_SEQ)
     repetitve_execute()
 
@@ -77,9 +78,17 @@ def split_single_to_multiple(s):
 def repetitve_execute():
     global AUTO_SEQ, AUTO_SEQ_DONE
     print('repetitve_execute')
+
+    att_val = []
+    for a in AUTO_SEQ_DONE:
+        att_val.append(a.attribute_value)
+
     for i in AUTO_SEQ:
-        print('Preverjam: ', i)
-        if i not in AUTO_SEQ_DONE:
+        print('Preverjam: ', i.attribute_value)
+
+
+        if i.attribute_value not in att_val:
+            print("Še ni narejen")
             AUTO_SEQ_DONE.append(i)
             execute_single(i)
             find_similar(i)
@@ -90,3 +99,6 @@ def repetitve_execute():
                 repetitve_execute()
             else:
                 break
+        else:
+            ()
+            # print("naj bi bil že narejen")
