@@ -4,10 +4,27 @@ from models.type import Type
 from tools.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
 from tools.webclient import is_returned_http_error as returned_error
 
-AUTO_COUNTER = 1000
-AUTO_SEQ = []
-AUTO_SEQ_DONE = []
-FAILED_AUTO_SEQ = []
+
+# AUTO_COUNTER = 1000
+# AUTO_SEQ = []
+# AUTO_SEQ_DONE = []
+# FAILED_AUTO_SEQ = []
+
+class MainModul:
+    def __init__(self, root):
+
+        # 1. postavi gumbe
+        # postavi semafor
+        # ob pritisku začne
+        # naredi logger vsakič nov file
+
+        self.AUTO_COUNTER = 1000
+        self.AUTO_SEQ = []
+        self.AUTO_SEQ_DONE = []
+        self.FAILED_AUTO_SEQ = []
+
+
+
 
 
 def execute(all_seq):
@@ -73,8 +90,6 @@ def split_single_to_multiple(s):
     repetitve_execute()
 
 
-
-
 def repetitve_execute():
     global AUTO_SEQ, AUTO_SEQ_DONE
     print('repetitve_execute')
@@ -85,7 +100,6 @@ def repetitve_execute():
 
     for i in AUTO_SEQ:
         print('Preverjam: ', i.attribute_value)
-
 
         if i.attribute_value not in att_val:
             print("Še ni narejen")

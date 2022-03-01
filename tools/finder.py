@@ -1,4 +1,4 @@
-# Finds json files in .\SEQUENCE subfolders
+# Finds json files in .\LIBRARY subfolders
 # Puts settings.json to first position, commons after that commons
 # They are split for order control - sequences must be sorted!
 
