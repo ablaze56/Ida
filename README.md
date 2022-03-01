@@ -6,6 +6,8 @@ Thank you for your visit.
 - Give her a try no matter if you're end-user or a team of developers.
 - No prior developer knowledge required.
 - For any questions write me to uros.dolzan@gmail.com
+- If you find Ida please consider buying me a coffee: https://www.buymeacoffee.com/qtxtz7q5f5M
+
 
 # Prerequisites
 

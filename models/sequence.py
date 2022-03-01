@@ -46,7 +46,7 @@ def get_type(t):
 
 
 class Sequence:
-    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait):
+    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait, find_all=False):
         self.file_id = file_id
         self.section_id = section_id
 
@@ -57,6 +57,6 @@ class Sequence:
 
         self.insert_text = insert_text
         self.wait = wait
-        self.findAll = False
+        self.findAll = find_all
         self.success = False
 

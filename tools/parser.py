@@ -87,7 +87,7 @@ def parse_sequence(data):
 
         # if sequence json contains common_id it uses attributes of the Common object
         if 'common_id' in s:
-            ids = filter(lambda f: f.common_id == s['common_id'], COMMONS)
+            ids = filter(lambda fo: fo.common_id == s['common_id'], COMMONS)
             listed = list(ids)
             if len(listed) == 0:
                 print(f"Error: Sequence: {s[c.DESC]} containing non existing common_id: {s['common_id']}")
@@ -100,12 +100,15 @@ def parse_sequence(data):
                          wait=found.wait)
 
         else:
+            # it should run differently - always checking and clicking on menu items
+            find_all = False
+            if 'findAll' in s:
+                if s['findAll']:
+                    find_all = True
+
             n = Sequence(file_id=FILE_ID, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=s[c.TYPE],
                          attribute_id=s[c.SEARCH][0], attribute_value=s[c.SEARCH][1], insert_text=json_text,
-                         wait=json_wait)
-
-            # it should run differently - always checking and clicking on menu items
-            n.FindAll = n.findAll if 'findAll' in s else False
+                         wait=json_wait, find_all=find_all)
 
         SECTION_ID += 1
         sequences.append(n)

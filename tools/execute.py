@@ -1,14 +1,12 @@
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from constants import all as cons
-from models.attribute import Attribute
 from time import sleep
 from models.type import Type
+from tools.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
+from tools.webclient import is_returned_http_error as returned_error
 
 AUTO_COUNTER = 1000
 AUTO_SEQ = []
+AUTO_SEQ_DONE = []
 FAILED_AUTO_SEQ = []
 
 
@@ -23,8 +21,11 @@ def execute(all_seq):
             print('skip for failed click: ', seq.desc)
         else:
             # search all occurrences in then execute them all
+            print('seq: ', seq.desc, seq.findAll)
             if seq.findAll:
-                find_and_execute_auto(seq)
+                # sequence split to several sequnces
+                split_single_to_multiple(seq)
+
             else:
                 execute_single(seq)
                 sleep(seq.wait)
@@ -36,62 +37,11 @@ def execute(all_seq):
     print('Success: ', count_all - count_failed, '/', count_all)
 
 
-def find_and_execute_auto(s):
-    print("Locating main auto sequence... ", s.desc)
-    try:
-        elements = choose(s)
-        recursive_search(elements, s)
-        s.success = True
-        print("Ok")
-
-    except:
-        print("ERROR: not found")
-
-
-def recursive_search(elements, main_sequence):
-    global AUTO_COUNTER, AUTO_SEQ, FAILED_AUTO_SEQ
-
-    for e in elements:
-        e_name = e.get_attribute(cons.NAME)
-        if e_name in AUTO_SEQ:
-            print(f'{e_name} already ran, skip.')
-            continue
-
-        new = main_sequence
-        new.section_id += AUTO_COUNTER
-        e_id = e.get_attribute(e.attribute_id)
-        new.attribute_value = e_id
-        new.success = False
-
-        AUTO_SEQ.append(e_name)
-        AUTO_COUNTER += 1
-
-        if new.type == cons.CLICK:
-            new.click()
-
-            try:
-                elements = choose(new)
-                recursive_search(elements, main_sequence)
-                new.success = True
-                sleep(new.wait)
-                print("Ok")
-
-            except:
-                FAILED_AUTO_SEQ.append(e_name)
-
-                if is_returned_http_error():
-                    print('CRITICAL ERROR')
-                    break
-                else:
-                    print("ERROR: Not found")
-
-
-
 def execute_single(seq):
     print("Locating... ", seq.desc)
 
     try:
-        element = choose(seq)
+        element = wait_until(seq)
         seq.success = True
         print("Ok")
 
@@ -104,42 +54,39 @@ def execute_single(seq):
             print("seq.type: ", seq.type)
     except:
 
-        if is_returned_http_error():
+        if returned_error():
             print('CRITICAL ERROR')
         else:
             print("ERROR: Not found")
 
 
-def choose(s):
-    wait = WebDriverWait(cons.DRIVER, 10)
+# NOVA
 
-    if s.attribute_id == Attribute.ID:
-        return wait.until(EC.visibility_of_element_located((By.ID, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.NAME:
-        return wait.until(EC.visibility_of_element_located((By.NAME, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.CLASS:
-        return wait.until(EC.visibility_of_element_located((By.CLASS_NAME, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.XPATH:
-        return wait.until(EC.visibility_of_element_located((By.XPATH, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.CSS_SELECTOR:
-        return wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.LINK_TEXT:
-        return wait.until(EC.visibility_of_element_located((By.LINK_TEXT, s.attribute_value)))
-
-    elif s.attribute_id == Attribute.JS_FUNCTION:
-        return s.attribute_value
+def split_single_to_multiple(s):
+    global AUTO_SEQ
+    print('split_single_to_multiple')
+    similar = find_similar(s)
+    AUTO_SEQ.extend(similar)
+    AUTO_SEQ.sort(key=lambda x: x.attribute_value)
+    print(AUTO_SEQ)
+    repetitve_execute()
 
 
-def is_returned_http_error():
-    wait = WebDriverWait(cons.DRIVER, 4)
-    try:
-        err = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'error-code')))
-        print(err)
-        return True
-    except:
-        return False
+
+
+def repetitve_execute():
+    global AUTO_SEQ, AUTO_SEQ_DONE
+    print('repetitve_execute')
+    for i in AUTO_SEQ:
+        print('Preverjam: ', i)
+        if i not in AUTO_SEQ_DONE:
+            AUTO_SEQ_DONE.append(i)
+            execute_single(i)
+            find_similar(i)
+            AUTO_SEQ.sort(key=lambda x: x.attribute_value)
+
+            if len(AUTO_SEQ) > len(AUTO_SEQ_DONE):
+                print('Ponovno od začetka')
+                repetitve_execute()
+            else:
+                break
