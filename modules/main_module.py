@@ -11,6 +11,12 @@ AUTO_SEQ_DONE = []
 FAILED_AUTO_SEQ = []
 
 
+class MainModule:
+    def __init__(self, root):
+        print('main module')
+
+
+
 def execute(all_seq):
     for seq in all_seq:
         # if any click on previous elements in this file failed it will skip next sections
@@ -39,7 +45,7 @@ def execute(all_seq):
 
 
 def execute_single(seq):
-    print("Locating... ", seq.desc)
+    print("Locating... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
 
     try:
         element = wait_until(seq)
@@ -54,7 +60,6 @@ def execute_single(seq):
         else:
             print("seq.type: ", seq.type)
     except:
-
         if returned_error():
             print('CRITICAL ERROR')
         else:
@@ -62,7 +67,6 @@ def execute_single(seq):
 
 
 # NOVA
-
 def split_single_to_multiple(s):
     global AUTO_SEQ
     print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
@@ -78,25 +82,26 @@ def repetitve_execute():
     global AUTO_SEQ, AUTO_SEQ_DONE
     print('repetitve_execute')
 
-    att_val = []
-    for a in AUTO_SEQ_DONE:
-        att_val.append(a.attribute_value)
+    undone = [x for x in AUTO_SEQ if x not in AUTO_SEQ_DONE]
+    print('AUTO_SEQ count: ', len(AUTO_SEQ), 'undone count: ', len(undone))
+    for u in undone:
+        AUTO_SEQ_DONE.append(u)
+        execute_single(u)
+        similar = find_similar(u)
+        new = [x for x in similar if x not in AUTO_SEQ]
+        AUTO_SEQ.extend(new)
+        AUTO_SEQ.sort(key=lambda x: x.attribute_value)
+        sleep(u.wait)
 
-    for i in AUTO_SEQ:
-        print('Preverjam: ', i.attribute_value)
+        if len(new) > 0:
+            print('Ponovno od začetka, ker so od začetka')
+            repetitve_execute()
+            break
 
-        if i.attribute_value not in att_val:
-            print("Še ni narejen")
-            AUTO_SEQ_DONE.append(i)
-            execute_single(i)
-            find_similar(i)
-            AUTO_SEQ.sort(key=lambda x: x.attribute_value)
 
-            if len(AUTO_SEQ) > len(AUTO_SEQ_DONE):
-                print('Ponovno od začetka')
-                repetitve_execute()
-            else:
-                break
+        if len(AUTO_SEQ) > len(AUTO_SEQ_DONE):
+            print('Ponovno od začetka')
+            repetitve_execute()
+            break
         else:
-            ()
-            # print("naj bi bil že narejen")
+            break

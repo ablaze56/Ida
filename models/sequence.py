@@ -46,7 +46,7 @@ def get_type(t):
 
 
 class Sequence:
-    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait, find_all=False, superior_att_value=''):
+    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait, find_all=False):
         self.file_id = file_id
         self.section_id = section_id
 
@@ -61,5 +61,5 @@ class Sequence:
 
         # for automated testing based on common part of id, i.e. 'menu_'
         self.success = False
-        self.superior_att_value = superior_att_value
+        self.superior_att_value = self.attribute_value
 

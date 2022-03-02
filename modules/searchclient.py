@@ -39,22 +39,23 @@ AUTO_ORIGINAL = ''
 
 def find_similar_elements(s):
     found_all = []
-    print("Išče podobnega: ", s.attribute_value)
+    print("Išče podobnega: ", s.superior_att_value)
 
     if s.attribute_id == Attribute.NAME:
-        found_all = (c.DRIVER.find_elements_by_name(s.attribute_value))
+        found_all = (c.DRIVER.find_elements_by_name(s.superior_att_value))
 
     elif s.attribute_id == Attribute.CLASS:
-        found_all = (c.DRIVER.find_elements_by_class_name(s.attribute_value))
+        found_all = (c.DRIVER.find_elements_by_class_name(s.superior_att_value))
 
     elif s.attribute_id == Attribute.XPATH:
-        found_all = (c.DRIVER.find_elements_by_xpath(s.attribute_value))
+
+        found_all = (c.DRIVER.find_elements_by_xpath(s.superior_att_value))
 
     elif s.attribute_id == Attribute.CSS_SELECTOR:
-        found_all = (c.DRIVER.find_elements_by_css_selector(s.attribute_value))
+        found_all = (c.DRIVER.find_elements_by_css_selector(s.superior_att_value))
 
     elif s.attribute_id == Attribute.LINK_TEXT:
-        found_all = (c.DRIVER.find_elements_by_link_text(s.attribute_value))
+        found_all = (c.DRIVER.find_elements_by_link_text(s.superior_att_value))
 
 
     else:
@@ -66,22 +67,22 @@ def find_similar_elements(s):
     # iterate WebElements
     for f in found_all:
         section_id = s.section_id + count
-        n = Sequence(file_id=s.file_id, section_id=section_id, desc=s.desc, sequence_type=s.type,
-                     attribute_id=s.attribute_id, attribute_value=s.attribute_value, insert_text=s.insert_text, wait=s.wait, find_all=False)
-        n.superior_att_value=s.attribute_value
 
         if not isinstance(f, Sequence):
             e = str(f.get_attribute(c.ID))
-            print('e: ', e)
             if len(e) > 0:
-                n.attribute_value = e
+                # replace similar for finding this element
+                splitted = s.attribute_value.split("'")
+                if len(splitted) != 3:
+                    print('Error handling automated menu testing..')
+                    break
+
+                val = splitted[0] + "'" + e + "'" + splitted[2]
+                n = Sequence(file_id=s.file_id, section_id=section_id, desc=s.desc, sequence_type=s.type,
+                     attribute_id=c.XPATH, attribute_value=val, insert_text=s.insert_text, wait=s.wait, find_all=False)
+
 
         ids.append(n)
         count += 1
-        print('dodal: isd', n.attribute_value)
-
-    print('-- KONEC --')
-    for a in ids:
-        print(a.section_id, a.attribute_id, a.attribute_value)
 
     return ids
