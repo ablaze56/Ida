@@ -1,30 +1,14 @@
 from constants import all as cons
 from time import sleep
 from models.type import Type
-from tools.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
-from tools.webclient import is_returned_http_error as returned_error
+from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
+from modules.webclient import is_returned_http_error as returned_error
 
 
-# AUTO_COUNTER = 1000
-# AUTO_SEQ = []
-# AUTO_SEQ_DONE = []
-# FAILED_AUTO_SEQ = []
-
-class MainModul:
-    def __init__(self, root):
-
-        # 1. postavi gumbe
-        # postavi semafor
-        # ob pritisku začne
-        # naredi logger vsakič nov file
-
-        self.AUTO_COUNTER = 1000
-        self.AUTO_SEQ = []
-        self.AUTO_SEQ_DONE = []
-        self.FAILED_AUTO_SEQ = []
-
-
-
+AUTO_COUNTER = 1000
+AUTO_SEQ = []
+AUTO_SEQ_DONE = []
+FAILED_AUTO_SEQ = []
 
 
 def execute(all_seq):
