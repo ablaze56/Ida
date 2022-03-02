@@ -1,20 +1,17 @@
+import tkinter
+
 from constants import all as cons
 from time import sleep
 from models.type import Type
 from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
 from modules.webclient import is_returned_http_error as returned_error
+from components.semaphore import Semaphore, SemaphoreKind
 
 
 AUTO_COUNTER = 1000
 AUTO_SEQ = []
 AUTO_SEQ_DONE = []
 FAILED_AUTO_SEQ = []
-
-
-class MainModule:
-    def __init__(self, root):
-        print('main module')
-
 
 
 def execute(all_seq):

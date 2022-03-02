@@ -32,3 +32,8 @@ INSERT_TEXT = 'insertText'
 XPATH = 'xpath'
 CSS_SELECTOR = 'css_selector'
 WAIT = 'wait'
+
+
+BACKGROUND_COLOR = 'grey75'
+SMALL_FONT = ("Arial", 12, "normal")
+SCORE_FONT = ("Arial", 48, "bold")
