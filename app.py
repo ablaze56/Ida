@@ -13,7 +13,6 @@ from models.type import Type
 from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until, escape_send
 from modules.webclient import is_returned_http_error as returned_error
 
-
 # Globals
 # tracking automated testing, made specifically for menus with similar id, i.e. menu_1, menu_1_!
 auto_seq = []
@@ -21,13 +20,15 @@ auto_seq_done = []
 auto_seq_failed = []
 
 
-
 class App(tk.Frame):
     def __init__(self, root, *args, **kwargs):
         tk.Frame.__init__(self, root, *args, **kwargs)
 
         Thread(target=self.begin).start()
+
         self.sequences = []
+        self.sequences_done = []
+        self.sequences_failed = []
 
         # Widgets
         self.top = tk.Frame(root, bg=c.FRAME_BG_COLOR)
@@ -44,7 +45,6 @@ class App(tk.Frame):
         self.running = Record(self.bottom, RecordKind.RUNNING)
         self.next = Record(self.bottom, RecordKind.NEXT)
 
-
     def begin(self):
         # imports settings and sequences from .\library folder and parse them into objects
         data = read()
@@ -52,7 +52,6 @@ class App(tk.Frame):
         WebClient()
         self.all_nr.update(fix=len(self.sequences))
         self.execute(self.sequences)
-
 
     def execute(self, all_seq):
         for seq in all_seq:
@@ -80,10 +79,10 @@ class App(tk.Frame):
         count_failed = len(list(failed))
         print('Success: ', count_all - count_failed, '/', count_all)
 
-
     def execute_single(self, seq):
         print("Locating... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
         self.cur_nr.update(add=1)
+        self.updateRecords()
 
         try:
             element = wait_until(seq)
@@ -111,11 +110,12 @@ class App(tk.Frame):
         print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
         similar = find_similar(s)
 
+        # index of s, v ta index vrini similar
+
         auto_seq.extend(similar)
         auto_seq.sort(key=lambda x: x.attribute_value)
 
         self.repetitve_execute()
-
 
     def repetitve_execute(self):
         global auto_seq, auto_seq_done
@@ -144,5 +144,48 @@ class App(tk.Frame):
             else:
                 break
 
+    def updateRecords(self):
+        global auto_seq, auto_seq_done
+
+        count = len(self.sequences)
+        print('update records: ', count)
+
+        if count == 0:
+            self.past.update('')
+            self.running.update('')
+            self.next.update('')
+        else:
+            ()
+
+        if count > 0:
+            self.running.update(self.sequences[0].desc)
+        elif count > 1:
+            ()
 
 
+
+        else:
+            ()
+
+
+
+        #     if count > 0:
+        #         des0 = self.sequences[0]
+        #         self.running.update(des0.desc)
+        #         if count > 1:
+        #             des1 = self.sequences[1]
+        #             self.next.update(des1.desc)
+        #         else:
+        #             self.next.update('')
+        #     else:
+        #         self.running.update('')
+        #
+        # else:
+        #     prev = auto_seq_done[-1]
+        #     index = auto_seq.index(prev)
+        #     curr = auto_seq_done[index + 1]
+        #     next = auto_seq_done[index + 2]
+        #
+        #     self.past.update(auto_seq_done[-1].desc)
+        #     self.running.update(curr.desc)
+        #     self.next.update(next.desc)

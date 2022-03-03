@@ -3,7 +3,7 @@ import constants.all as c
 
 
 class SemaphoreKind:
-    ALL = ['Tests', 0.01]
+    ALL = ['All Tests', 0.01]
     CURRENT = ['Current', 0.335]
     ERRORS = ['Errors', 0.66]
 
@@ -20,9 +20,9 @@ class Semaphore(tk.Frame):
 
         self.lb = tk.Label(fr, text=self.kind[0], bd=0, font=c.TITLE_FONT, justify='center', bg=c.ITEM_BG_COLOR,
                            fg='black')
-        self.lb.place(relx=self.kind[1] + 0.02, rely=0.7, relwidth=0.25, relheight=0.15)
+        self.lb.place(relx=self.kind[1] + 0.02, rely=0.7, relwidth=0.28, relheight=0.15)
 
-        self.nr = tk.Label(fr, text='', bd=0, font=c.SCORE_FONT, justify='center', bg=c.ITEM_BG_COLOR, fg='black')
+        self.nr = tk.Label(fr, text='0', bd=0, font=c.SCORE_FONT, justify='center', bg=c.ITEM_BG_COLOR, fg=c.SCORE_COLOR)
         self.nr.place(relx=self.kind[1] + 0.02, rely=0.1, relwidth=0.28, relheight=0.5)
 
 

@@ -39,4 +39,6 @@ FRAME_BG_COLOR = '#f8f9fa'
 ITEM_BG_COLOR = 'white'
 TITLE_FONT = ("Arial", 9, "normal")
 SMALL_FONT = ("Arial", 11, "normal")
+SCORE_COLOR = '#1b75bc'
 SCORE_FONT = ("Arial", 42, "bold")
+ERROR_COLOR = '#851619'
