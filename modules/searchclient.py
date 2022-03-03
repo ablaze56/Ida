@@ -1,11 +1,13 @@
 # finding elements
-
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 from constants import all as c
 from models.attribute import Attribute
 from models.sequence import Sequence
+from time import sleep
 
 
 
@@ -57,7 +59,6 @@ def find_similar_elements(s):
     elif s.attribute_id == Attribute.LINK_TEXT:
         found_all = (c.DRIVER.find_elements_by_link_text(s.superior_att_value))
 
-
     else:
         print('unsupported type for automated testing')
 
@@ -86,3 +87,8 @@ def find_similar_elements(s):
         count += 1
 
     return ids
+
+
+def escape_send():
+    sleep(1)
+    webdriver.ActionChains(c.DRIVER).send_keys(Keys.ESCAPE).perform()

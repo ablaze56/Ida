@@ -3,9 +3,9 @@ import tkinter
 from constants import all as cons
 from time import sleep
 from models.type import Type
-from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until
+from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until, escape_send
 from modules.webclient import is_returned_http_error as returned_error
-from components.semaphore import Semaphore, SemaphoreKind
+
 
 
 AUTO_COUNTER = 1000
@@ -82,23 +82,25 @@ def repetitve_execute():
     undone = [x for x in AUTO_SEQ if x not in AUTO_SEQ_DONE]
     print('AUTO_SEQ count: ', len(AUTO_SEQ), 'undone count: ', len(undone))
     for u in undone:
+
+
         AUTO_SEQ_DONE.append(u)
         execute_single(u)
         similar = find_similar(u)
-        new = [x for x in similar if x not in AUTO_SEQ]
-        AUTO_SEQ.extend(new)
+
+        for s in similar:
+            if s.attribute_value != u.attribute_value:
+                AUTO_SEQ.append(s)
+
         AUTO_SEQ.sort(key=lambda x: x.attribute_value)
-        sleep(u.wait)
-
-        if len(new) > 0:
-            print('Ponovno od začetka, ker so od začetka')
-            repetitve_execute()
-            break
-
 
         if len(AUTO_SEQ) > len(AUTO_SEQ_DONE):
             print('Ponovno od začetka')
+            # check for modal pop up and close it:
+            escape_send()
             repetitve_execute()
             break
         else:
             break
+
+
