@@ -1,24 +1,24 @@
 import tkinter as tk
-from modules.finder import read
-from modules.parser import parse
-from modules.webclient import WebClient
-from main_module import execute
-from threading import Thread
-
+import platform
 from app import App
-
-
-def begin():
-    # imports settings and sequences from .\library folder and parse them into objects
-    data = read()
-    sequences = parse(data)
-    WebClient()
-    execute(sequences)
+import constants.all as c
 
 
 def main():
-    Thread(target=begin).start()
     root = tk.Tk()
+
+    root.title("Ida (v:1.0)")
+    root.geometry('360x180')
+    root.attributes("-topmost", True)
+    root.config(bg=c.FRAME_BG_COLOR)
+
+    system = platform.system()
+    if system == 'Windows':
+        root.iconbitmap('./img/ikona.ico')
+    elif system == 'Darwin':
+        img = tk.Image("photo", file="./img/ikona.png")
+        root.iconphoto(True, img)
+
     App(root)
     root.mainloop()
 

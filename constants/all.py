@@ -34,6 +34,9 @@ CSS_SELECTOR = 'css_selector'
 WAIT = 'wait'
 
 
-BACKGROUND_COLOR = 'grey75'
-SMALL_FONT = ("Arial", 12, "normal")
-SCORE_FONT = ("Arial", 48, "bold")
+# VIEW Components
+FRAME_BG_COLOR = '#f8f9fa'
+ITEM_BG_COLOR = 'white'
+TITLE_FONT = ("Arial", 9, "normal")
+SMALL_FONT = ("Arial", 11, "normal")
+SCORE_FONT = ("Arial", 42, "bold")
