@@ -13,22 +13,16 @@ from models.type import Type
 from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until, escape_send
 from modules.webclient import is_returned_http_error as returned_error
 
-# Globals
-# tracking automated testing, made specifically for menus with similar id, i.e. menu_1, menu_1_!
-auto_seq = []
-auto_seq_done = []
-auto_seq_failed = []
-
 
 class App(tk.Frame):
     def __init__(self, root, *args, **kwargs):
         tk.Frame.__init__(self, root, *args, **kwargs)
 
-        Thread(target=self.begin).start()
+        Thread(target=self.get_data).start()
 
         self.sequences = []
-        self.sequences_done = []
-        self.sequences_failed = []
+        self.finished = []
+        self.failed = []
 
         # Widgets
         self.top = tk.Frame(root, bg=c.FRAME_BG_COLOR)
@@ -45,20 +39,21 @@ class App(tk.Frame):
         self.running = Record(self.bottom, RecordKind.RUNNING)
         self.next = Record(self.bottom, RecordKind.NEXT)
 
-    def begin(self):
+    def get_data(self):
         # imports settings and sequences from .\library folder and parse them into objects
         data = read()
         self.sequences = parse(data)
+        print("self.sequences: ", len(self.sequences))
         WebClient()
         self.all_nr.update(fix=len(self.sequences))
-        self.execute(self.sequences)
+        self.begin()
 
-    def execute(self, all_seq):
-        for seq in all_seq:
+    def begin(self):
+        for seq in self.sequences:
             # if any click on previous elements in this file failed it will skip next sections
             failed_clicks = filter(lambda
                                        s: s.file_id == seq.file_id and s.section_id < seq.section_id and not s.success and s.type == cons.CLICK,
-                                   all_seq)
+                                   self.sequences)
 
             if len(list(failed_clicks)) > 0:
                 print('skip for failed click: ', seq.desc)
@@ -67,22 +62,22 @@ class App(tk.Frame):
                 print('seq: ', seq.desc, seq.findAll)
                 if seq.findAll:
                     # sequence split to several sequnces
-                    self.split_single_to_multiple(seq)
+                    self.create_similar(seq)
 
                 else:
-                    self.execute_single(seq)
+                    self.perform(seq)
                     sleep(seq.wait)
 
         # Failed
-        failed = filter(lambda s: not s.success, all_seq)
-        count_all = len(list(all_seq))
+        failed = filter(lambda s: not s.success, self.sequences)
+        count_all = len(list(self.sequences))
         count_failed = len(list(failed))
         print('Success: ', count_all - count_failed, '/', count_all)
 
-    def execute_single(self, seq):
+    def perform(self, seq):
         print("Locating... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
-        self.cur_nr.update(add=1)
-        self.updateRecords()
+        self.finished.append(seq)
+        self.update_recorde()
 
         try:
             element = wait_until(seq)
@@ -97,6 +92,7 @@ class App(tk.Frame):
             else:
                 print("seq.type: ", seq.type)
         except:
+            self.failed.append(seq)
             if returned_error():
                 print('CRITICAL ERROR')
                 self.err_nr.update(add=1)
@@ -104,88 +100,72 @@ class App(tk.Frame):
                 print("ERROR: Not found")
                 self.err_nr.update(add=1)
 
-    # NOVA
-    def split_single_to_multiple(self, s):
-        global auto_seq
+    # Create sub events - Automatic recognition based on similar id inside xpath
+    def create_similar(self, s):
         print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
+
+        # Find similar items by ID and remove the same to avoid duplicates
         similar = find_similar(s)
+        similar = filter(lambda x: x.attribute_value != s.attribute_value, similar)
+        similar.sort(key=lambda x: x.attribute_value)
 
-        # index of s, v ta index vrini similar
+        # extend list after current sequence
+        ind = self.sequences.index(s)
+        self.sequences[ind + 1:1] = similar
 
-        auto_seq.extend(similar)
-        auto_seq.sort(key=lambda x: x.attribute_value)
+        self.recursive_perform()
 
-        self.repetitve_execute()
+    def recursive_perform(self):
+        print('recursive_perform')
 
-    def repetitve_execute(self):
-        global auto_seq, auto_seq_done
-        print('repetitve_execute')
-
-        undone = [x for x in auto_seq if x not in auto_seq_done]
-        print('AUTO_SEQ count: ', len(auto_seq), 'undone count: ', len(undone))
+        undone = [x for x in self.sequences if x not in self.finished]
+        print('AUTO_SEQ count: ', len(self.sequences), 'undone count: ', len(undone))
         for u in undone:
-            auto_seq_done.append(u)
-            self.execute_single(u)
+            self.finished.append(u)
+            self.perform(u)
             similar = find_similar(u)
 
             for s in similar:
                 if s.attribute_value != u.attribute_value:
-                    auto_seq.append(s)
-                    self.all_nr.update(add=1)
+                    ind = self.sequences.index(u)
+                    self.sequences.insert(ind, s)
 
-            auto_seq.sort(key=lambda x: x.attribute_value)
-
-            if len(auto_seq) > len(auto_seq_done):
+            if len(self.sequences) > len(self.finished):
                 print('Ponovno od začetka')
                 # check for modal pop up and close it:
                 escape_send()
-                self.repetitve_execute()
+                self.recursive_perform()
                 break
             else:
                 break
 
-    def updateRecords(self):
-        global auto_seq, auto_seq_done
+    def update_recorde(self):
+        print('update records: ', len(self.sequences))
 
-        count = len(self.sequences)
-        print('update records: ', count)
+        self.all_nr.update(fix=len(self.sequences))
+        self.cur_nr.update(fix=len(self.finished))
+        self.err_nr.update(fix=len(self.failed))
 
-        if count == 0:
-            self.past.update('')
-            self.running.update('')
-            self.next.update('')
+        if len(self.sequences) == 0:
+            self.past.clear()
+            self.running.clear()
+            self.next.clear()
         else:
-            ()
+            index = 0
 
-        if count > 0:
-            self.running.update(self.sequences[0].desc)
-        elif count > 1:
-            ()
+            if len(self.finished) > 0:
+                # index of the next sequence is the current sequence
+                index = self.sequences.index(self.finished[-1]) + 1
+                self.past.update(self.finished[-1].desc)
+            else:
+                self.past.clear()
 
+            if index < len(self.sequences):
+                self.running.update(self.sequences[index].desc)
+            else:
+                self.running.clear()
 
-
-        else:
-            ()
-
-
-
-        #     if count > 0:
-        #         des0 = self.sequences[0]
-        #         self.running.update(des0.desc)
-        #         if count > 1:
-        #             des1 = self.sequences[1]
-        #             self.next.update(des1.desc)
-        #         else:
-        #             self.next.update('')
-        #     else:
-        #         self.running.update('')
-        #
-        # else:
-        #     prev = auto_seq_done[-1]
-        #     index = auto_seq.index(prev)
-        #     curr = auto_seq_done[index + 1]
-        #     next = auto_seq_done[index + 2]
-        #
-        #     self.past.update(auto_seq_done[-1].desc)
-        #     self.running.update(curr.desc)
-        #     self.next.update(next.desc)
+            if index + 1 < len(self.sequences):
+                self.next.update(self.sequences[index + 1].desc)
+            else:
+                self.next.clear()
