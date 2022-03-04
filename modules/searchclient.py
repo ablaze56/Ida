@@ -10,7 +10,6 @@ from models.sequence import Sequence
 from time import sleep
 
 
-
 def wait_until_visible(s):
     wait = WebDriverWait(c.DRIVER, 10)
 
@@ -35,9 +34,6 @@ def wait_until_visible(s):
     elif s.attribute_id == Attribute.JS_FUNCTION:
         return s.attribute_value
 
-
-# elements with similar attribute, i.e. menus
-AUTO_ORIGINAL = ''
 
 def find_similar_elements(s):
     found_all = []
@@ -79,9 +75,10 @@ def find_similar_elements(s):
                     break
 
                 val = splitted[0] + "'" + e + "'" + splitted[2]
-                n = Sequence(file_id=s.file_id, section_id=section_id, desc=s.desc, sequence_type=s.type,
-                     attribute_id=c.XPATH, attribute_value=val, insert_text=s.insert_text, wait=s.wait, find_all=False)
-
+                desc = f'{s.desc} #auto {count - 99}/{len(found_all)}'
+                n = Sequence(file_id=s.file_id, section_id=section_id, desc=desc, sequence_type=s.type,
+                             attribute_id=c.XPATH, attribute_value=val, insert_text=s.insert_text, wait=s.wait,
+                             find_all=False)
 
         ids.append(n)
         count += 1

@@ -57,7 +57,7 @@ class Sequence:
 
         self.insert_text = insert_text
         self.wait = wait
-        self.findAll = find_all
+        self.find_all = find_all
 
         # for automated testing based on common part of id, i.e. 'menu_'
         self.success = False

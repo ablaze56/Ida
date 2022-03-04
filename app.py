@@ -59,8 +59,8 @@ class App(tk.Frame):
                 print('skip for failed click: ', seq.desc)
             else:
                 # search all occurrences in then execute them all
-                print('seq: ', seq.desc, seq.findAll)
-                if seq.findAll:
+                print('seq: ', seq.desc, seq.find_all)
+                if seq.find_all:
                     # sequence split to several sequnces
                     self.create_similar(seq)
 
@@ -105,8 +105,9 @@ class App(tk.Frame):
         print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
 
         # Find similar items by ID and remove the same to avoid duplicates
-        similar = find_similar(s)
-        similar = filter(lambda x: x.attribute_value != s.attribute_value, similar)
+        sim = find_similar(s)
+        sim = filter(lambda x: x.attribute_value != s.attribute_value, sim)
+        similar = list(sim)
         similar.sort(key=lambda x: x.attribute_value)
 
         # extend list after current sequence
@@ -118,7 +119,7 @@ class App(tk.Frame):
     def recursive_perform(self):
         print('recursive_perform')
 
-        undone = [x for x in self.sequences if x not in self.finished]
+        undone = [x for x in self.sequences if x not in self.finished and x.find_all]
         print('AUTO_SEQ count: ', len(self.sequences), 'undone count: ', len(undone))
         for u in undone:
             self.finished.append(u)
