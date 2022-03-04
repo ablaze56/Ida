@@ -13,9 +13,9 @@ def is_returned_http_error():
     try:
         err = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'error-code')))
         print(err)
-        return True
+        return [True, err]
     except:
-        return False
+        return [False, '']
 
 
 

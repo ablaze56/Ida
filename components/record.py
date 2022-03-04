@@ -29,7 +29,6 @@ class Record(tk.Frame):
 
 
     def update(self, text, err=False):
-        print('UPDATE!')
         self.lb.configure(text=f'{text}')
         if err:
             self.lb.configure(fg=c.ERROR_COLOR)
@@ -37,4 +36,7 @@ class Record(tk.Frame):
 
     def clear(self):
         self.lb.configure(text='')
+
+    def hide(self):
+        self.forget()
 

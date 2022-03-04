@@ -1,6 +1,7 @@
 import tkinter as tk
 from components.semaphore import Semaphore, SemaphoreKind
 from components.record import Record, RecordKind
+from components.openLogButton import OpenLogButton
 import constants.all as c
 
 from modules.finder import read
@@ -68,16 +69,12 @@ class App(tk.Frame):
                     self.perform(seq)
                     sleep(seq.wait)
 
-        # Failed
-        failed = filter(lambda s: not s.success, self.sequences)
-        count_all = len(list(self.sequences))
-        count_failed = len(list(failed))
-        print('Success: ', count_all - count_failed, '/', count_all)
+        self.create_report()
+        print('Finished')
 
     def perform(self, seq):
         print("Locating... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
         self.finished.append(seq)
-        self.update_recorde()
 
         try:
             element = wait_until(seq)
@@ -92,13 +89,16 @@ class App(tk.Frame):
             else:
                 print("seq.type: ", seq.type)
         except:
+            err = f"Error: Ida didn't found element by {seq.attribute_id}: {seq.attribute_value}"
+            returned_err = returned_error()
+            if returned_err[0]:
+                err = f'CRITICAL Error: {returned_err[1]}'
+
+            self.err_nr.update(add=1)
+            seq.err = err
             self.failed.append(seq)
-            if returned_error():
-                print('CRITICAL ERROR')
-                self.err_nr.update(add=1)
-            else:
-                print("ERROR: Not found")
-                self.err_nr.update(add=1)
+
+        self.update_recorde()
 
     # Create sub events - Automatic recognition based on similar id inside xpath
     def create_similar(self, s):
@@ -113,6 +113,7 @@ class App(tk.Frame):
         # extend list after current sequence
         ind = self.sequences.index(s)
         self.sequences[ind + 1:1] = similar
+        self.all_nr.update(fix=len(self.sequences))
 
         self.recursive_perform()
 
@@ -170,3 +171,22 @@ class App(tk.Frame):
                 self.next.update(self.sequences[index + 1].desc)
             else:
                 self.next.clear()
+
+
+
+
+    def create_report(self):
+
+        for widgets in self.bottom.winfo_children():
+            widgets.destroy()
+
+
+        message = 'Good job! No errors found.'
+        if len(self.failed) > 0:
+            message = 'Errors found! Check the latest logfile for details.'
+            OpenLogButton(self.bottom, self.failed)
+
+        finished_lbl = tk.Label(self.bottom, font=c.SMALL_FONT, text=message, justify='left', anchor="w", bg=c.FRAME_BG_COLOR)
+        finished_lbl.place(relx=0.02, rely=0.25, relwidth=0.85, relheight=0.25)
+
+        #

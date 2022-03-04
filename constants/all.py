@@ -3,8 +3,9 @@ from selenium import webdriver
 
 DRIVER: webdriver
 
-# ali dela na winsih
 FOLDER = Path('./library')
+LOG_FOLDER = Path('./reports')
+
 URL = ''
 
 USER_CONSTANTS = []

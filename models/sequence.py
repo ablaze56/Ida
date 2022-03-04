@@ -63,3 +63,5 @@ class Sequence:
         self.success = False
         self.superior_att_value = self.attribute_value
 
+        self.error = ''
+
