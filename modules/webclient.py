@@ -4,19 +4,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+import selenium.common.exceptions as exc
 from constants import all as c
-
 
 
 def is_returned_http_error():
     wait = WebDriverWait(c.DRIVER, 4)
     try:
         err = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'error-code')))
-        print(err)
         return [True, err]
-    except:
+    except (ValueError, Exception) as e:
+        print('Good, error-code is not found.')
         return [False, '']
-
 
 
 class WebClient:

@@ -1,15 +1,14 @@
 import tkinter as tk
+from tkinter import messagebox
+from threading import Thread
+from time import sleep
+import constants.all as c
 from components.semaphore import Semaphore, SemaphoreKind
 from components.record import Record, RecordKind
 from components.openLogButton import OpenLogButton
-import constants.all as c
-
 from modules.finder import read
 from modules.parser import parse
 from modules.webclient import WebClient
-from threading import Thread
-from constants import all as cons
-from time import sleep
 from models.type import Type
 from modules.searchclient import find_similar_elements as find_similar, wait_until_visible as wait_until, escape_send
 from modules.webclient import is_returned_http_error as returned_error
@@ -24,6 +23,8 @@ class App(tk.Frame):
         self.sequences = []
         self.finished = []
         self.failed = []
+
+        self.run_count = 0
 
         # Widgets
         self.top = tk.Frame(root, bg=c.FRAME_BG_COLOR)
@@ -53,7 +54,7 @@ class App(tk.Frame):
         for seq in self.sequences:
             # if any click on previous elements in this file failed it will skip next sections
             failed_clicks = filter(lambda
-                                       s: s.file_id == seq.file_id and s.section_id < seq.section_id and not s.success and s.type == cons.CLICK,
+                                       s: s.file_id == seq.file_id and s.section_id < seq.section_id and not s.success and s.type == c.CLICK,
                                    self.sequences)
 
             if len(list(failed_clicks)) > 0:
@@ -64,7 +65,6 @@ class App(tk.Frame):
                 if seq.find_all:
                     # sequence split to several sequnces
                     self.create_similar(seq)
-
                 else:
                     self.perform(seq)
                     sleep(seq.wait)
@@ -88,22 +88,24 @@ class App(tk.Frame):
                     element.send_keys(seq.insert_text)
             else:
                 print("seq.type: ", seq.type)
-        except:
-            err = f"Error: Ida didn't found element by {seq.attribute_id}: {seq.attribute_value}"
+                self.err_nr.update(add=1)
+                seq.error = f'Internal application error: Unknown sequence type: {seq.type}'
+                self.failed.append(seq)
+
+        except (ValueError, Exception) as e:
+            err = f"Unable to locate an element with {seq.attribute_id} expression {seq.attribute_value}."
             returned_err = returned_error()
             if returned_err[0]:
-                err = f'CRITICAL Error: {returned_err[1]}'
+                err = f'{returned_err[1]}'
 
             self.err_nr.update(add=1)
-            seq.err = err
+            seq.error = err
             self.failed.append(seq)
 
         self.update_recorde()
 
     # Create sub events - Automatic recognition based on similar id inside xpath
     def create_similar(self, s):
-        print('split_single_to_multiple from ', s.attribute_id, s.attribute_value)
-
         # Find similar items by ID and remove the same to avoid duplicates
         sim = find_similar(s)
         sim = filter(lambda x: x.attribute_value != s.attribute_value, sim)
@@ -118,10 +120,8 @@ class App(tk.Frame):
         self.recursive_perform()
 
     def recursive_perform(self):
-        print('recursive_perform')
-
         undone = [x for x in self.sequences if x not in self.finished and x.find_all]
-        print('AUTO_SEQ count: ', len(self.sequences), 'undone count: ', len(undone))
+        # print('AUTO_SEQ count: ', len(self.sequences), 'undone count: ', len(undone))
         for u in undone:
             self.finished.append(u)
             self.perform(u)
@@ -133,8 +133,8 @@ class App(tk.Frame):
                     self.sequences.insert(ind, s)
 
             if len(self.sequences) > len(self.finished):
-                print('Ponovno od začetka')
-                # check for modal pop up and close it:
+                # restart
+                # check for modal pop up and close it if necessary:
                 escape_send()
                 self.recursive_perform()
                 break
@@ -142,51 +142,53 @@ class App(tk.Frame):
                 break
 
     def update_recorde(self):
-        print('update records: ', len(self.sequences))
+        nr_seq = len(self.sequences)
 
-        self.all_nr.update(fix=len(self.sequences))
+        self.all_nr.update(fix=nr_seq)
         self.cur_nr.update(fix=len(self.finished))
         self.err_nr.update(fix=len(self.failed))
 
-        if len(self.sequences) == 0:
-            self.past.clear()
-            self.running.clear()
-            self.next.clear()
+        if nr_seq == 0:
+            messagebox.showerror('Error', 'No Sequences found!')
+
         else:
-            index = 0
 
-            if len(self.finished) > 0:
-                # index of the next sequence is the current sequence
-                index = self.sequences.index(self.finished[-1]) + 1
-                self.past.update(self.finished[-1].desc)
-            else:
-                self.past.clear()
+            txt = self.sequences[self.run_count].desc
+            if self.sequences[self.run_count].wait > 0:
+                txt += f' waiting {self.sequences[self.run_count].wait}s'
+            self.running.update(txt)
 
-            if index < len(self.sequences):
-                self.running.update(self.sequences[index].desc)
-            else:
-                self.running.clear()
+            if self.run_count+1 < nr_seq:
+                txt = self.sequences[self.run_count+1].desc
+                if self.sequences[self.run_count+1].wait > 0:
+                    txt += f'waiting {self.sequences[self.run_count+1].wait}s'
 
-            if index + 1 < len(self.sequences):
-                self.next.update(self.sequences[index + 1].desc)
+                self.next.update(self.sequences[self.run_count+1].desc)
             else:
                 self.next.clear()
 
+            if self.run_count == 0:
+                self.past.clear()
+            else:
+                if self.sequences[self.run_count-1].error:
+                    self.past.update(self.sequences[self.run_count-1].desc, err=True)
+                else:
+                    self.past.update(self.sequences[self.run_count - 1].desc)
 
-
+        self.run_count += 1
 
     def create_report(self):
-
         for widgets in self.bottom.winfo_children():
             widgets.destroy()
 
-
-        message = 'Good job! No errors found.'
+        finished_lbl = tk.Label(self.bottom, justify='left', anchor="w",
+                                bg=c.FRAME_BG_COLOR, font=c.END_MESSAGE_FONT)
+        col = c.SCORE_COLOR
+        message = ':) Good job! No errors found.'
         if len(self.failed) > 0:
-            message = 'Errors found! Check the latest logfile for details.'
+            col = c.ERROR_COLOR
+            message = ':( Errors found.'
             OpenLogButton(self.bottom, self.failed)
 
-        finished_lbl = tk.Label(self.bottom, font=c.SMALL_FONT, text=message, justify='left', anchor="w", bg=c.FRAME_BG_COLOR)
+        finished_lbl.config(text=message, fg=col)
         finished_lbl.place(relx=0.02, rely=0.25, relwidth=0.85, relheight=0.25)
-
-        #

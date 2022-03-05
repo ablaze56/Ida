@@ -3,8 +3,8 @@ import constants.all as c
 
 
 class SemaphoreKind:
-    ALL = ['All Tests', 0.01]
-    CURRENT = ['Current', 0.335]
+    ALL = ['Nr of tests', 0.01]
+    CURRENT = ['Completed', 0.335]
     ERRORS = ['Errors', 0.66]
 
 

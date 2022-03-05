@@ -3,15 +3,15 @@ import constants.all as c
 from models.sequence import Sequence
 from models.common import Common
 
-FILE_ID: int = 0
-SECTION_ID: int = 0
 
+SECTION_ID: int = 0
 COMMONS = []
 
 
 def parse(names):
-    global FILE_ID, SECTION_ID, COMMONS
-    res = []
+    global SECTION_ID, COMMONS
+    file_id = ''
+    seq = []
     for n in names:
         SECTION_ID = 0
 
@@ -25,11 +25,11 @@ def parse(names):
                 if 'commons' in data:
                     parse_common(data['commons'])
                 elif 'seq' in data:
-                    res.extend(parse_sequence(data['seq']))
+                    seq.extend(parse_sequence(data['seq'], file_id))
 
-                FILE_ID += 1
+                file_id = n
 
-    return res
+    return seq
 
 
 def parse_settings(data):
@@ -49,8 +49,8 @@ def parse_settings(data):
             c.USER_CONSTANTS.append([name, value])
 
 
-def parse_sequence(data):
-    global FILE_ID, SECTION_ID, COMMONS
+def parse_sequence(data, file_id):
+    global SECTION_ID, COMMONS
     sequences = []
     for s in data:
 
@@ -94,7 +94,7 @@ def parse_sequence(data):
                 continue
 
             found = listed[0].sequence
-            n = Sequence(file_id=FILE_ID, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=found.type,
+            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=found.type,
                          attribute_id=found.attribute_id, attribute_value=found.attribute_value,
                          insert_text=found.insert_text,
                          wait=found.wait)
@@ -106,7 +106,7 @@ def parse_sequence(data):
                 if s['findAll']:
                     find_all = True
 
-            n = Sequence(file_id=FILE_ID, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=s[c.TYPE],
+            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=s[c.TYPE],
                          attribute_id=s[c.SEARCH][0], attribute_value=s[c.SEARCH][1], insert_text=json_text,
                          wait=json_wait, find_all=find_all)
 
