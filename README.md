@@ -2,18 +2,18 @@
 
 
 Thank you for your visit.
-- Ida was built for performing repetitive UI tests and can be highly scalable.
+- Ida was built for performing repetitive UI tests on websites or web apps inside Google Chrome and can be highly scalable.
 - Give her a try no matter if you're end-user or a team of developers.
 - No prior developer knowledge required.
 - For any questions write me to uros.dolzan@gmail.com
-- If you find Ida please consider buying me a coffee: https://www.buymeacoffee.com/qtxtz7q5f5M
+- If you find Ida useful please consider buying me a coffee: https://www.buymeacoffee.com/qtxtz7q5f5M
 
 
 # Prerequisites
 
 Currently, only Google Chrome is supported.
-You'll need to learn how to find elements. You can do it in no time,
-check the links:
+If you don't have developer background, you'll need to learn how to find elements. 
+You can do it in no time, check the links:
 - https://www.wikihow.com/Inspect-Element-on-Chrome
 - https://www.toolsqa.com/selenium-webdriver/inspect-element-in-chrome/
 
@@ -190,8 +190,12 @@ _Use of Common in Sequences:_
       "common_id": "confirmButton"
     }
 
+### Report
+When errors are detected, Ida will generate logfile in the ./reports folder.
+For easier identification name of the log file consists of date, time and number of errors.
+
+
 ### Example
 Please check example folder for reference. You can even invert
-folders: 
-- rename folder example to library
-- rename folder library to example
+names of the folders:
+Rename folder example to library and vice versa.
