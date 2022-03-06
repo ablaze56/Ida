@@ -46,3 +46,4 @@ SMALL_FONT = ("Tahoma", 9, "normal")
 SCORE_COLOR = '#1b75bc'
 SCORE_FONT = ("Tahoma", 42, "bold")
 ERROR_COLOR = '#851619'
+LOGO_BLUE_COLOR = '#1099d6'

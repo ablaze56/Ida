@@ -1,0 +1,16 @@
+certifi~=2021.10.8
+selenium~=4.1.2
+trio~=0.20.0
+urllib3~=1.26.8
+requests~=2.27.1
+setuptools==60.9.3
+outcome~=1.1.0
+attrs~=21.4.0
+sniffio~=1.2.0
+sortedcontainers~=2.4.0
+cffi~=1.15.0
+idna~=3.3
+cryptography~=36.0.1
+zipp~=3.7.0
+configparser~=5.2.0
+Pillow~=9.0.1
