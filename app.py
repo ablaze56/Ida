@@ -44,6 +44,7 @@ class App(tk.Frame):
     def get_data(self):
         # imports settings and sequences from .\library folder and parse them into objects
         data = read()
+        print('data: ', data)
         self.sequences = parse(data)
         print("self.sequences: ", len(self.sequences))
         WebClient()
@@ -186,7 +187,7 @@ class App(tk.Frame):
         col = c.SCORE_COLOR
         message = ':) Good job! No errors found.'
         if len(self.failed) > 0:
-            col = c.ERROR_COLOR
+            # col = c.ERROR_COLOR
             message = ':( Errors found.'
             OpenLogButton(self.bottom, self.failed)
 

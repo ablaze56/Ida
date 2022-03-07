@@ -15,7 +15,7 @@ class OpenLogButton(tk.Button):
 
         self.failed = failed
 
-        self.config(text='Open log', font=c.RECORD_FONT, justify='center', fg=c.ERROR_COLOR,
+        self.config(text='Open log', font=c.RECORD_FONT, justify='center', fg='black',
                     bg=c.ITEM_BG_COLOR, bd=1, highlightthickness=2,
                     highlightbackground=c.FRAME_BG_COLOR, borderwidth=2,
                     command=lambda: self.open_log())
@@ -56,7 +56,8 @@ class OpenLogButton(tk.Button):
             if platform.system() == 'Darwin':  # macOS
                 subprocess.call(('open', f'{c.LOG_FOLDER}/{self.name}'))
             elif platform.system() == 'Windows':  # Windows
-                os.startfile(f'{c.LOG_FOLDER}/{self.name}')
+                print(f'{c.LOG_FOLDER}\{self.name}')
+                os.startfile(f'.{c.LOG_FOLDER}/{self.name}')
             else:  # linux variants
                 subprocess.call(('xdg-open', f'{c.LOG_FOLDER}/{self.name}'))
         except OSError as oe:

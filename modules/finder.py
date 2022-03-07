@@ -13,8 +13,10 @@ def read():
     sequences = []
 
     selection = []
+    print('read', c.LIBRARY_FOLDER)
 
-    for path, _, files in os.walk(c.FOLDER):
+    for path, _, files in os.walk(c.LIBRARY_FOLDER):
+        print('files: ', files, 'c: ', str(c.LIBRARY_FOLDER))
         for f in files:
             if f.endswith('json'):
                 full_path = os.path.join(path, f)

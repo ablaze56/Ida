@@ -1,10 +1,13 @@
-from pathlib import Path
 from selenium import webdriver
 
 DRIVER: webdriver
 
-FOLDER = Path('./library')
-LOG_FOLDER = Path('./reports')
+
+WORK_FOLDER = ''
+LIBRARY_FOLDER = ''
+LOG_FOLDER = ''
+SETTINGS_FOLDER = ''
+SEQUENCES_FOLDER = ''
 
 URL = ''
 

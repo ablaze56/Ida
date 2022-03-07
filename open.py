@@ -1,7 +1,9 @@
 import tkinter as tk
 from constants import all as c
 from app import App
+from os import path
 from PIL import Image, ImageTk
+from pathlib import Path
 
 
 class Open(tk.Frame):
@@ -43,6 +45,14 @@ class Open(tk.Frame):
 
         self.start_btn.place(relx=0.75, rely=0.66, relwidth=0.2, relheight=0.25)
 
+
+
+
+
     def begin_tests(self):
         self.lbl.pack_forget()
-        App(self.root)
+
+        prf = tk.Frame(self.root, bg=c.LOGO_BLUE_COLOR)
+        prf.place(relx=0, rely=0.014, relwidth=0.98, relheight=0.984)
+
+        App(prf)
