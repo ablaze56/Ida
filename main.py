@@ -3,7 +3,7 @@ import platform
 import constants.all as c
 from open import Open
 from pathlib import Path
-from os import path
+from os import getcwd
 
 
 def main():
@@ -13,31 +13,28 @@ def main():
     root.geometry('360x180')
     root.attributes("-topmost", True)
     root.config(bg=c.FRAME_BG_COLOR)
-    create_paths()
-
-    system = platform.system()
-    if system == 'Windows':
-        root.iconbitmap('./img/ikona.ico')
-    elif system == 'Darwin':
-        img = tk.Image("photo", file="./img/ikona.png")
-        root.iconphoto(True, img)
+    setup(root)
 
     Open(root)
     root.mainloop()
 
 
+def setup(rt):
 
+    cwd = getcwd()
+    c.SYSTEM = platform.system()
+    if c.SYSTEM == 'Windows':
+        c.WORK_FOLDER = cwd
+        rt.iconbitmap('./img/ikona.ico')
+    elif c.SYSTEM == 'Darwin':
+        c.WORK_FOLDER = cwd.replace('Ida.app/Contents/Resources', '')
+        img = tk.Image("photo", file="./img/ikona.png")
+        rt.iconphoto(True, img)
 
-def create_paths():
-    c.WORK_FOLDER = path.dirname(path.realpath(__file__))
     c.LIBRARY_FOLDER = Path(f'{c.WORK_FOLDER}/library')
     c.LOG_FOLDER = Path(f'{c.WORK_FOLDER}/reports')
     c.SETTINGS_FOLDER = Path(f'{c.WORK_FOLDER}/library/settings')
     c.SEQUENCES_FOLDER = Path(f'{c.WORK_FOLDER}/library/sequences')
-
-    print(f'lib: {c.LIBRARY_FOLDER}')
-    print(f'log: {c.LOG_FOLDER}')
-    print('-----')
 
 
 if __name__ == '__main__':

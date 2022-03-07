@@ -1,9 +1,7 @@
 import tkinter as tk
 from constants import all as c
 from app import App
-from os import path
 from PIL import Image, ImageTk
-from pathlib import Path
 
 
 class Open(tk.Frame):
@@ -27,27 +25,18 @@ class Open(tk.Frame):
         self.text_frame = tk.Frame(root, bg=c.LOGO_BLUE_COLOR)
         self.text_frame.place(relx=0.6, rely=0, relwidth=0.4, relheight=1)
 
-        self.i1 = tk.Label(self.text_frame, bg=c.LOGO_BLUE_COLOR, fg=c.FRAME_BG_COLOR, anchor='w')
+        self.i1 = tk.Label(self.text_frame, bg=c.LOGO_BLUE_COLOR, fg=c.FRAME_BG_COLOR, font=c.END_MESSAGE_FONT,
+                           anchor='w')
         self.i1.config(text='Hi :)')
-        self.i1.place(relx=0, rely=0.05, relwidth=1, relheight=0.18)
+        self.i1.place(relx=0.12, rely=0.25, relwidth=0.82, relheight=0.18)
 
-        self.i2 = tk.Label(self.text_frame, bg=c.LOGO_BLUE_COLOR, fg=c.FRAME_BG_COLOR, anchor='w')
-        self.i2.config(text='Prepare sequences')
-        self.i2.place(relx=0, rely=0.2, relwidth=1, relheight=0.18)
+        self.start_btn = tk.Button(self.text_frame)
+        self.start_btn.config(text="Let's test", font=c.END_MESSAGE_FONT, justify='center', fg='black',
+                              bg=c.LOGO_BLUE_COLOR,bd=1, highlightthickness=2,
+                              highlightbackground=c.LOGO_BLUE_COLOR, borderwidth=2,
+                              command=lambda: self.begin_tests())
 
-        self.i3 = tk.Label(self.text_frame, bg=c.LOGO_BLUE_COLOR, fg=c.FRAME_BG_COLOR, anchor='w')
-        self.i3.config(text='and let me do my job.')
-        self.i3.place(relx=0, rely=0.35, relwidth=1, relheight=0.18)
-
-        self.start_btn = tk.Button(root, text='Go', font=c.END_MESSAGE_FONT, justify='center', fg=c.LOGO_BLUE_COLOR,
-                                   bd=0, highlightthickness=2, highlightbackground=c.LOGO_BLUE_COLOR, borderwidth=2,
-                                   command=lambda: self.begin_tests())
-
-        self.start_btn.place(relx=0.75, rely=0.66, relwidth=0.2, relheight=0.25)
-
-
-
-
+        self.start_btn.place(relx=0.35, rely=0.72, relwidth=0.55, relheight=0.17)
 
     def begin_tests(self):
         self.lbl.pack_forget()

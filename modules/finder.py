@@ -1,4 +1,4 @@
-# Finds json files in .\LIBRARY subfolders
+# Finds json files in .\LIBRARY folders
 # Puts settings.json to first position, commons after that commons
 # They are split for order control - sequences must be sorted!
 
@@ -13,10 +13,8 @@ def read():
     sequences = []
 
     selection = []
-    print('read', c.LIBRARY_FOLDER)
 
     for path, _, files in os.walk(c.LIBRARY_FOLDER):
-        print('files: ', files, 'c: ', str(c.LIBRARY_FOLDER))
         for f in files:
             if f.endswith('json'):
                 full_path = os.path.join(path, f)

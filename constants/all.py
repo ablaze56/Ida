@@ -2,6 +2,7 @@ from selenium import webdriver
 
 DRIVER: webdriver
 
+SYSTEM = ''
 
 WORK_FOLDER = ''
 LIBRARY_FOLDER = ''
@@ -22,11 +23,8 @@ USER_CONSTANT = 'userConstant'
 LINK_TEXT = 'linkText'
 
 # json elements
-
 SEARCH = 'search'
-
 SKIP = 'skip'
-
 DESC = 'desc'
 ID = 'id'
 NAME = 'name'
@@ -46,7 +44,7 @@ END_MESSAGE_FONT = ("Tahoma", 14, "bold")
 RECORD_FONT = ("Tahoma", 10, "normal")
 CURRENT_RECORD_FONT = ("Tahoma", 11, "normal")
 SMALL_FONT = ("Tahoma", 9, "normal")
-SCORE_COLOR = '#1b75bc'
+SCORE_COLOR = '#342214' # '#1b75bc'
 SCORE_FONT = ("Tahoma", 42, "bold")
-ERROR_COLOR = '#851619'
+ERROR_COLOR = '#851619' #851619'
 LOGO_BLUE_COLOR = '#1099d6'

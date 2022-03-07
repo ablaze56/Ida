@@ -25,7 +25,6 @@ class Semaphore(tk.Frame):
         self.nr = tk.Label(fr, text='0', bd=0, font=c.SCORE_FONT, justify='center', bg=c.ITEM_BG_COLOR, fg=c.SCORE_COLOR)
         self.nr.place(relx=self.kind[1] + 0.02, rely=0.15, relwidth=0.28, relheight=0.5)
 
-
     def update(self, fix=0, add=0):
         print(self.kind, ' update record: ', 'fix: ', fix, 'add: ', add)
         if fix > 0:
@@ -35,8 +34,7 @@ class Semaphore(tk.Frame):
             self.score += add
         self.nr.configure(text=f'{self.score}')
 
-
         if self.kind == SemaphoreKind.ERRORS:
             if self.score > 0:
-                self.nr.configure(fg='red')
+                self.nr.configure(fg=c.ERROR_COLOR)
 
