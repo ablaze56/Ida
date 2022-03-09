@@ -3,9 +3,9 @@ import constants.all as c
 
 
 class SemaphoreKind:
-    ALL = ['Nr of tests', 0.01]
-    SUCCESS = ['Success', 0.335]
-    ERRORS = ['Error', 0.66]
+    ALL = ['Nr of tests', 0.02]
+    SUCCESS = ['Success', 0.34]
+    ERRORS = ['Error', 0.665]
 
 
 class Semaphore(tk.Frame):
@@ -16,7 +16,7 @@ class Semaphore(tk.Frame):
         self.kind = kind
 
         self.config(bd=1, relief='sunken', bg=c.ITEM_BG_COLOR)
-        self.place(relx=self.kind[1], rely=0.05, relwidth=0.31, relheight=0.85)
+        self.place(relx=self.kind[1], rely=0.06, relwidth=0.31, relheight=0.85)
 
         self.lb = tk.Label(fr, text=self.kind[0], bd=0, font=c.TITLE_FONT, justify='center', bg=c.ITEM_BG_COLOR,
                            fg='black')

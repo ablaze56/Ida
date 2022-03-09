@@ -21,10 +21,6 @@ class App(tk.Frame):
         Thread(target=self.get_data).start()
 
         self.sequences = []
-      #  self.finished = []
-      #  self.success = []
-      #  self.failed = []
-
         self.run_count = 0
 
         # Widgets

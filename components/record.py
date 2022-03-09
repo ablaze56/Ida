@@ -16,7 +16,7 @@ class Record(tk.Frame):
         self.kind = kind
 
         self.config(bd=1, relief='sunken', bg=c.ITEM_BG_COLOR)
-        self.place(relx=0.01, rely=self.kind-0.014, relwidth=0.96, relheight=0.285)
+        self.place(relx=0.02, rely=self.kind-0.014, relwidth=0.96, relheight=0.285)
 
         self.lb = tk.Label(fr, text='', bd=0, bg=c.ITEM_BG_COLOR, anchor='w')
 

@@ -40,6 +40,6 @@ class Open(tk.Frame):
         self.lbl.pack_forget()
 
         prf = tk.Frame(self.root, bg=c.LOGO_BLUE_COLOR)
-        prf.place(relx=0, rely=0.014, relwidth=0.98, relheight=0.984)
+        prf.place(relx=0, rely=0.0135, relwidth=0.98, relheight=0.984)
 
         App(prf)
