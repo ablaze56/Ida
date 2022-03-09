@@ -21,9 +21,9 @@ class App(tk.Frame):
         Thread(target=self.get_data).start()
 
         self.sequences = []
-        self.finished = []
-        self.success = []
-        self.failed = []
+      #  self.finished = []
+      #  self.success = []
+      #  self.failed = []
 
         self.run_count = 0
 
@@ -75,7 +75,7 @@ class App(tk.Frame):
     def perform(self, seq):
         print("perform... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
         seq.invoked = True
-        self.update_recorde()
+        self.update_records()
         try:
             element = wait_until(seq)
             if seq.type == Type.CLICK:
@@ -103,7 +103,7 @@ class App(tk.Frame):
             seq.error = err
             seq.failed = True
 
-       # self.update_recorde
+        self.update_records()
 
 
     # Create sub events - Automatic recognition based on similar id inside xpath
@@ -158,22 +158,23 @@ class App(tk.Frame):
                 break
 
 
-    def update_recorde(self):
+    def update_records(self):
         nr_seq = len(self.sequences)
 
-        invoked = list(filter(lambda x: x.invoked, self.sequences))
+        success = list(filter(lambda x: x.success, self.sequences))
+        failed = list(filter(lambda x: x.failed, self.sequences))
 
         self.all_nr.update(fix=nr_seq)
-        self.err_nr.update(fix=len(self.failed))
+        self.err_nr.update(fix=len(failed))
 
-        self.success_nr.update(fix=len(invoked))
+        self.success_nr.update(fix=len(success))
 
 
         if nr_seq == 0:
             messagebox.showerror('Error', 'No Sequences found!')
 
         else:
-            print('nr_seq: ', nr_seq, 'len(self.finished):', len(self.success))
+            print('nr_seq: ', nr_seq, 'len(self.finished):', len(success))
             txt = self.sequences[self.run_count].desc
             if self.sequences[self.run_count].wait > 0:
                 txt += f' waiting {self.sequences[self.run_count].wait}s'
