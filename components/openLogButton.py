@@ -6,7 +6,6 @@ from datetime import datetime
 import logging
 import os
 import subprocess
-import platform
 
 
 class OpenLogButton(tk.Button):
@@ -46,18 +45,17 @@ class OpenLogButton(tk.Button):
         self.create_report()
 
     def create_report(self):
-        print('Create report')
         for d in self.failed:
-            print(f'report data: {d.file_id}, desc: {d.desc}, err: {d.error}')
             logging.error(f'file: {d.file_id}, desc: {d.desc}, err: {d.error}')
+        logging.shutdown()
 
     def open_log(self):
         try:
-            if platform.system() == 'Darwin':  # macOS
+            if c.SYSTEM == 'Darwin':  # macOS
                 subprocess.call(('open', f'{c.LOG_FOLDER}/{self.name}'))
-            elif platform.system() == 'Windows':  # Windows
+            elif c.SYSTEM == 'Windows':
                 print(f'{c.LOG_FOLDER}\{self.name}')
-                os.startfile(f'.{c.LOG_FOLDER}/{self.name}')
+                os.system(f'start {c.LOG_FOLDER}/{self.name}')
             else:  # linux variants
                 subprocess.call(('xdg-open', f'{c.LOG_FOLDER}/{self.name}'))
         except OSError as oe:

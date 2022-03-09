@@ -46,7 +46,8 @@ def get_type(t):
 
 
 class Sequence:
-    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait, find_all=False):
+    def __init__(self, file_id, section_id, desc, sequence_type, attribute_id, attribute_value, insert_text, wait,
+                 auto_find=False):
         self.file_id = file_id
         self.section_id = section_id
 
@@ -56,12 +57,18 @@ class Sequence:
         self.attribute_value = attribute_value
 
         self.insert_text = insert_text
+
+        # wait after executing this sequence
         self.wait = wait
-        self.find_all = find_all
+
+        self.invoked = False
+        self.failed = False
+        self.success = False
 
         # for automated testing based on common part of id, i.e. 'menu_'
-        self.success = False
+        self.auto_find = auto_find
         self.superior_att_value = self.attribute_value
 
+        # error description for logging
         self.error = ''
 

@@ -84,17 +84,22 @@ def parse_sequence(data, file_id):
         json_wait = s[c.WAIT] if c.WAIT in s else 0.1
 
         n: Sequence
+        desc = ''
+
+        if c.DESC in s:
+            desc = s[c.DESC]
+
 
         # if sequence json contains common_id it uses attributes of the Common object
         if 'common_id' in s:
             ids = filter(lambda fo: fo.common_id == s['common_id'], COMMONS)
             listed = list(ids)
             if len(listed) == 0:
-                print(f"Error: Sequence: {s[c.DESC]} containing non existing common_id: {s['common_id']}")
+                print(f"Error: Sequence: {desc} containing non existing common_id: {s['common_id']}")
                 continue
 
             found = listed[0].sequence
-            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=found.type,
+            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=desc, sequence_type=found.type,
                          attribute_id=found.attribute_id, attribute_value=found.attribute_value,
                          insert_text=found.insert_text,
                          wait=found.wait)
@@ -106,9 +111,9 @@ def parse_sequence(data, file_id):
                 if s['findAll']:
                     find_all = True
 
-            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=s[c.DESC], sequence_type=s[c.TYPE],
+            n = Sequence(file_id=file_id, section_id=SECTION_ID, desc=desc, sequence_type=s[c.TYPE],
                          attribute_id=s[c.SEARCH][0], attribute_value=s[c.SEARCH][1], insert_text=json_text,
-                         wait=json_wait, find_all=find_all)
+                         wait=json_wait, auto_find=find_all)
 
         SECTION_ID += 1
         sequences.append(n)

@@ -4,8 +4,8 @@ import constants.all as c
 
 class SemaphoreKind:
     ALL = ['Nr of tests', 0.01]
-    CURRENT = ['Completed', 0.335]
-    ERRORS = ['Errors', 0.66]
+    SUCCESS = ['Success', 0.335]
+    ERRORS = ['Error', 0.66]
 
 
 class Semaphore(tk.Frame):

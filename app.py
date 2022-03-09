@@ -22,6 +22,7 @@ class App(tk.Frame):
 
         self.sequences = []
         self.finished = []
+        self.success = []
         self.failed = []
 
         self.run_count = 0
@@ -31,7 +32,7 @@ class App(tk.Frame):
         self.top.place(relx=0.02, rely=0.02, relwidth=0.98, relheight=0.50)
 
         self.all_nr = Semaphore(self.top, SemaphoreKind.ALL)
-        self.cur_nr = Semaphore(self.top, SemaphoreKind.CURRENT)
+        self.success_nr = Semaphore(self.top, SemaphoreKind.SUCCESS)
         self.err_nr = Semaphore(self.top, SemaphoreKind.ERRORS)
 
         self.bottom = tk.Frame(root, bg=c.FRAME_BG_COLOR)
@@ -44,9 +45,7 @@ class App(tk.Frame):
     def get_data(self):
         # imports settings and sequences from .\library folder and parse them into objects
         data = read()
-        print('data: ', data)
         self.sequences = parse(data)
-        print("self.sequences: ", len(self.sequences))
         WebClient()
         self.all_nr.update(fix=len(self.sequences))
         self.begin()
@@ -62,8 +61,8 @@ class App(tk.Frame):
                 print('skip for failed click: ', seq.desc)
             else:
                 # search all occurrences in then execute them all
-                print('seq: ', seq.desc, seq.find_all)
-                if seq.find_all:
+                print('begin: ', seq.attribute_value, seq.auto_find)
+                if seq.auto_find:
                     # sequence split to several sequnces
                     self.create_similar(seq)
                 else:
@@ -74,24 +73,26 @@ class App(tk.Frame):
         print('Finished')
 
     def perform(self, seq):
-        print("Locating... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
-        self.finished.append(seq)
-
+        print("perform... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
+        seq.invoked = True
+        self.update_recorde()
         try:
             element = wait_until(seq)
-            seq.success = True
-            print("Ok")
-
             if seq.type == Type.CLICK:
+                seq.success = True
                 element.click()
             elif seq.type == Type.INPUT:
                 if len(seq.insert_text) > 0:
+                    seq.success = True
                     element.send_keys(seq.insert_text)
+                else:
+                    seq.error = f'Unknown type of in then sequence : {seq.type}'
+                    seq.failed = True
             else:
                 print("seq.type: ", seq.type)
-                self.err_nr.update(add=1)
+                # self.err_nr.update(add=1)
                 seq.error = f'Internal application error: Unknown sequence type: {seq.type}'
-                self.failed.append(seq)
+                seq.failed = True
 
         except (ValueError, Exception) as e:
             err = f"Unable to locate an element with {seq.attribute_id} expression {seq.attribute_value}."
@@ -99,61 +100,80 @@ class App(tk.Frame):
             if returned_err[0]:
                 err = f'{returned_err[1]}'
 
-            self.err_nr.update(add=1)
             seq.error = err
-            self.failed.append(seq)
+            seq.failed = True
 
-        self.update_recorde()
+       # self.update_recorde
+
 
     # Create sub events - Automatic recognition based on similar id inside xpath
     def create_similar(self, s):
         # Find similar items by ID and remove the same to avoid duplicates
         sim = find_similar(s)
-        sim = filter(lambda x: x.attribute_value != s.attribute_value, sim)
-        similar = list(sim)
+
+        # list of attributes values
+        existing_attribute_values = [x.attribute_value for x in self.sequences]
+
+        # add non-existing sequences and sort them
+        similar = list(filter(lambda x: x.attribute_value not in existing_attribute_values, sim))
         similar.sort(key=lambda x: x.attribute_value)
 
         # extend list after current sequence
         ind = self.sequences.index(s)
         self.sequences[ind + 1:1] = similar
+
+        # update score
         self.all_nr.update(fix=len(self.sequences))
 
         self.recursive_perform()
 
     def recursive_perform(self):
-        undone = [x for x in self.sequences if x not in self.finished and x.find_all]
-        # print('AUTO_SEQ count: ', len(self.sequences), 'undone count: ', len(undone))
+        # recursion only for elements which weren't invokend and mare marked with auto_find
+        undone = [x for x in self.sequences if not x.invoked and x.auto_find]
+
+        # avoid duplications
+        existing_attribute_values = [x.attribute_value for x in self.sequences]
+
         for u in undone:
-            self.finished.append(u)
+            # click and find other similar
             self.perform(u)
             similar = find_similar(u)
+            similar.sort(key=lambda x: x.attribute_value)
 
-            for s in similar:
-                if s.attribute_value != u.attribute_value:
+            for i, s in enumerate(similar):
+                if s.attribute_value not in existing_attribute_values:
                     ind = self.sequences.index(u)
-                    self.sequences.insert(ind, s)
+                    # if not existing add it to sequences after previous
+                    self.sequences.insert(ind+i, s)
 
-            if len(self.sequences) > len(self.finished):
-                # restart
+            # recheck for invoked after addaing new elements
+            not_invoked = list(filter(lambda x: not x.invoked and x.auto_find, self.sequences))
+            if len(not_invoked) > 0:
                 # check for modal pop up and close it if necessary:
                 escape_send()
+                # restart
                 self.recursive_perform()
                 break
             else:
                 break
 
+
     def update_recorde(self):
         nr_seq = len(self.sequences)
 
+        invoked = list(filter(lambda x: x.invoked, self.sequences))
+
         self.all_nr.update(fix=nr_seq)
-        self.cur_nr.update(fix=len(self.finished))
         self.err_nr.update(fix=len(self.failed))
+
+        self.success_nr.update(fix=len(invoked))
+
 
         if nr_seq == 0:
             messagebox.showerror('Error', 'No Sequences found!')
 
         else:
-
+            print('nr_seq: ', nr_seq, 'len(self.finished):', len(self.success))
             txt = self.sequences[self.run_count].desc
             if self.sequences[self.run_count].wait > 0:
                 txt += f' waiting {self.sequences[self.run_count].wait}s'

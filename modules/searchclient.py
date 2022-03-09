@@ -37,7 +37,6 @@ def wait_until_visible(s):
 
 def find_similar_elements(s):
     found_all = []
-    print("Išče podobnega: ", s.superior_att_value)
 
     if s.attribute_id == Attribute.NAME:
         found_all = (c.DRIVER.find_elements_by_name(s.superior_att_value))
@@ -78,7 +77,8 @@ def find_similar_elements(s):
                 desc = f'{s.desc} #auto {count - 99}/{len(found_all)}'
                 n = Sequence(file_id=s.file_id, section_id=section_id, desc=desc, sequence_type=s.type,
                              attribute_id=c.XPATH, attribute_value=val, insert_text=s.insert_text, wait=s.wait,
-                             find_all=False)
+                             auto_find=False)
+                n.auto_find = True
 
         ids.append(n)
         count += 1

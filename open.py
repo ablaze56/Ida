@@ -31,12 +31,10 @@ class Open(tk.Frame):
         self.i1.place(relx=0.12, rely=0.25, relwidth=0.82, relheight=0.18)
 
         self.start_btn = tk.Button(self.text_frame)
-        self.start_btn.config(text="Let's test", font=c.END_MESSAGE_FONT, justify='center', fg='black',
-                              bg=c.LOGO_BLUE_COLOR,bd=1, highlightthickness=2,
-                              highlightbackground=c.LOGO_BLUE_COLOR, borderwidth=2,
+        self.start_btn.config(text="Let's test", font=c.CURRENT_RECORD_FONT, justify='center', fg='black',
                               command=lambda: self.begin_tests())
 
-        self.start_btn.place(relx=0.35, rely=0.72, relwidth=0.55, relheight=0.17)
+        self.start_btn.place(relx=0.22, rely=0.74, relwidth=0.7, relheight=0.17)
 
     def begin_tests(self):
         self.lbl.pack_forget()
