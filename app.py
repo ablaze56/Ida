@@ -95,12 +95,10 @@ class App(tk.Frame):
             returned_err = returned_error()
             if returned_err[0]:
                 err = f'{returned_err[1]}'
-
             seq.error = err
             seq.failed = True
 
         self.update_records()
-
 
     # Create sub events - Automatic recognition based on similar id inside xpath
     def create_similar(self, s):
@@ -153,47 +151,56 @@ class App(tk.Frame):
             else:
                 break
 
-
     def update_records(self):
-        nr_seq = len(self.sequences)
+        nr_of_seq = len(self.sequences)
+
+        if nr_of_seq == 0:
+            messagebox.showerror('Error', 'No Sequences found!')
+            return
+
+        invoked = list(filter(lambda x: x.invoked, self.sequences))
+        counter = len(invoked) + 1
 
         success = list(filter(lambda x: x.success, self.sequences))
         failed = list(filter(lambda x: x.failed, self.sequences))
 
-        self.all_nr.update(fix=nr_seq)
+        # update counters on top
+        self.all_nr.update(fix=nr_of_seq)
+        self.success_nr.update(fix=len(success))
         self.err_nr.update(fix=len(failed))
 
-        self.success_nr.update(fix=len(success))
+        # update records on bottom
+        # current record
+        if len(invoked) < 1:
+            self.running.clear()
+            return
 
+        txt = invoked[-1].desc
+        if self.sequences[-1].wait > 0:
+            txt += f' waiting {self.sequences[-1].wait}s'
+        self.running.update(txt)
 
-        if nr_seq == 0:
-            messagebox.showerror('Error', 'No Sequences found!')
+        # next record
+        following = counter + 1
+        if following < nr_of_seq:
+            txt = self.sequences[following].desc
 
+            if self.sequences[following].wait > 0:
+                txt += f'waiting {self.sequences[following].wait}s'
+            self.next.update(txt)
         else:
-            print('nr_seq: ', nr_seq, 'len(self.finished):', len(success))
-            txt = self.sequences[self.run_count].desc
-            if self.sequences[self.run_count].wait > 0:
-                txt += f' waiting {self.sequences[self.run_count].wait}s'
-            self.running.update(txt)
+            self.next.clear()
 
-            if self.run_count+1 < nr_seq:
-                txt = self.sequences[self.run_count+1].desc
-                if self.sequences[self.run_count+1].wait > 0:
-                    txt += f'waiting {self.sequences[self.run_count+1].wait}s'
+        # previous record
+        previous = counter - 1
+        if counter == 0 or counter - 1 < 1:
+            self.past.clear()
+            return
 
-                self.next.update(self.sequences[self.run_count+1].desc)
-            else:
-                self.next.clear()
-
-            if self.run_count == 0:
-                self.past.clear()
-            else:
-                if self.sequences[self.run_count-1].error:
-                    self.past.update(self.sequences[self.run_count-1].desc, err=True)
-                else:
-                    self.past.update(self.sequences[self.run_count - 1].desc)
-
-        self.run_count += 1
+        if self.sequences[previous].error:
+            self.past.update(self.sequences[previous].desc, err=True)
+        else:
+            self.past.update(self.sequences[previous].desc)
 
     def create_report(self):
         for widgets in self.bottom.winfo_children():
@@ -201,12 +208,14 @@ class App(tk.Frame):
 
         finished_lbl = tk.Label(self.bottom, justify='left', anchor="w",
                                 bg=c.FRAME_BG_COLOR, font=c.END_MESSAGE_FONT)
+
+        failed = list(filter(lambda x: x.failed, self.sequences))
         col = c.SCORE_COLOR
         message = ':) Good job! No errors found.'
-        if len(self.failed) > 0:
+        if len(failed) > 0:
             col = c.ERROR_COLOR
             message = ':( Errors found.'
-            OpenLogButton(self.bottom, self.failed)
+            OpenLogButton(self.bottom, failed)
 
         finished_lbl.config(text=message, fg=col)
         finished_lbl.place(relx=0.02, rely=0.25, relwidth=0.85, relheight=0.25)
