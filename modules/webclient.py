@@ -11,7 +11,7 @@ def is_returned_http_error():
     wait = WebDriverWait(c.DRIVER, 4)
     try:
         err = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'error-code')))
-        return [True, err]
+        return [True, err.text]
     except (ValueError, Exception) as e:
         print('Good, error-code is not found.')
         return [False, '']

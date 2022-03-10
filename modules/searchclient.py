@@ -74,7 +74,9 @@ def find_similar_elements(s):
                     break
 
                 val = splitted[0] + "'" + e + "'" + splitted[2]
-                desc = f'{s.desc} #auto {count - 99}/{len(found_all)}'
+                desc = f'{s.desc}'
+                if '#auto' not in desc:
+                    desc = f'{s.desc} #auto'
                 n = Sequence(file_id=s.file_id, section_id=section_id, desc=desc, sequence_type=s.type,
                              attribute_id=c.XPATH, attribute_value=val, insert_text=s.insert_text, wait=s.wait,
                              auto_find=False)

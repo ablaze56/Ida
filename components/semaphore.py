@@ -19,8 +19,8 @@ class Semaphore(tk.Frame):
         self.place(relx=self.kind[1], rely=0.06, relwidth=0.31, relheight=0.85)
 
         self.lb = tk.Label(fr, text=self.kind[0], bd=0, font=c.TITLE_FONT, justify='center', bg=c.ITEM_BG_COLOR,
-                           fg='black')
-        self.lb.place(relx=self.kind[1] + 0.02, rely=0.75, relwidth=0.28, relheight=0.15)
+                           fg='grey50')
+        self.lb.place(relx=self.kind[1] + 0.02, rely=0.73, relwidth=0.28, relheight=0.15)
 
         self.nr = tk.Label(fr, text='0', bd=0, font=c.SCORE_FONT, justify='center', bg=c.ITEM_BG_COLOR, fg=c.SCORE_COLOR)
         self.nr.place(relx=self.kind[1] + 0.02, rely=0.15, relwidth=0.28, relheight=0.5)

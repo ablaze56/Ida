@@ -71,7 +71,6 @@ class App(tk.Frame):
     def perform(self, seq):
         print("perform... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
         seq.invoked = True
-       # self.update_records()
         try:
             element = wait_until(seq)
             if seq.type == Type.CLICK:
@@ -95,6 +94,7 @@ class App(tk.Frame):
             returned_err = returned_error()
             if returned_err[0]:
                 err = f'{returned_err[1]}'
+                print('HTML Error: ', err )
             seq.error = err
             seq.failed = True
 
@@ -161,7 +161,7 @@ class App(tk.Frame):
         invoked = list(filter(lambda x: x.invoked, self.sequences))
         counter = len(invoked) + 1
 
-        success = list(filter(lambda x: x.success, self.sequences))
+        success = list(filter(lambda x: x.success and not x.failed, self.sequences))
         failed = list(filter(lambda x: x.failed, self.sequences))
 
         # update counters on top
@@ -183,11 +183,7 @@ class App(tk.Frame):
         # next record
         following = counter + 1
         if following < nr_of_seq:
-            txt = self.sequences[following].desc
-
-            if self.sequences[following].wait > 0:
-                txt += f'waiting {self.sequences[following].wait}s'
-            self.next.update(txt)
+            self.next.update(self.sequences[following].desc)
         else:
             self.next.clear()
 

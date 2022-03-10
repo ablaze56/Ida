@@ -39,12 +39,12 @@ WAIT = 'wait'
 # VIEW Components
 FRAME_BG_COLOR = '#f8f9fa'
 ITEM_BG_COLOR = 'white'
-TITLE_FONT = ("Tahoma", 9, "normal")
-END_MESSAGE_FONT = ("Tahoma", 14, "bold")
-RECORD_FONT = ("Tahoma", 10, "normal")
-CURRENT_RECORD_FONT = ("Tahoma", 11, "normal")
+TITLE_FONT = ("Tahoma", 8, "normal")
+END_MESSAGE_FONT = ("Tahoma", 14, "normal")
+RECORD_FONT = ("Tahoma", 8, "normal")
+CURRENT_RECORD_FONT = ("Tahoma", 9, "normal")
 SMALL_FONT = ("Tahoma", 9, "normal")
 SCORE_COLOR = '#342214' # '#1b75bc'
-SCORE_FONT = ("Tahoma", 42, "bold")
+SCORE_FONT = ("Tahoma", 38, "normal")
 ERROR_COLOR = '#851619' #851619'
 LOGO_BLUE_COLOR = '#1099d6'
