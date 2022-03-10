@@ -71,7 +71,7 @@ class App(tk.Frame):
     def perform(self, seq):
         print("perform... ", seq.desc, seq.type, seq.attribute_id, seq.attribute_value)
         seq.invoked = True
-        self.update_records()
+       # self.update_records()
         try:
             element = wait_until(seq)
             if seq.type == Type.CLICK:
@@ -192,15 +192,16 @@ class App(tk.Frame):
             self.next.clear()
 
         # previous record
-        previous = counter - 1
-        if counter == 0 or counter - 1 < 1:
-            self.past.clear()
-            return
-
-        if self.sequences[previous].error:
-            self.past.update(self.sequences[previous].desc, err=True)
+        if len(success) > 0:
+            if self.sequences[-1].error:
+                self.past.update(self.sequences[-1].desc, err=True)
+            else:
+                self.past.update(self.sequences[-1].desc)
         else:
-            self.past.update(self.sequences[previous].desc)
+            self.past.clear()
+
+
+
 
     def create_report(self):
         for widgets in self.bottom.winfo_children():
