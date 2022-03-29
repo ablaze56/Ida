@@ -26,7 +26,7 @@ class Semaphore(tk.Frame):
         self.nr.place(relx=self.kind[1] + 0.02, rely=0.15, relwidth=0.28, relheight=0.5)
 
     def update(self, fix=0, add=0):
-        print(self.kind, ' update record: ', 'fix: ', fix, 'add: ', add)
+      #  print(self.kind, ' update record: ', 'fix: ', fix, 'add: ', add)
         if fix > 0:
             self.score = fix
 

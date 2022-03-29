@@ -1,5 +1,6 @@
 # finding elements
 from selenium import webdriver
+from selenium.common.exceptions import NoAlertPresentException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -45,7 +46,6 @@ def find_similar_elements(s):
         found_all = (c.DRIVER.find_elements_by_class_name(s.superior_att_value))
 
     elif s.attribute_id == Attribute.XPATH:
-
         found_all = (c.DRIVER.find_elements_by_xpath(s.superior_att_value))
 
     elif s.attribute_id == Attribute.CSS_SELECTOR:
@@ -89,5 +89,31 @@ def find_similar_elements(s):
 
 
 def escape_send():
-    sleep(1)
-    webdriver.ActionChains(c.DRIVER).send_keys(Keys.ESCAPE).perform()
+
+    try:
+        WebDriverWait(c.DRIVER, 1).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, 'dx-popup-content')))
+        print('NAŠEL')
+        sleep(0.5)
+        webdriver.ActionChains(c.DRIVER).send_keys(Keys.ESCAPE).perform()
+       # b.click()
+       # sleep(1.5)
+
+    except TimeoutException:
+        print('no alert present')
+
+
+  #  try:
+  #      WebDriverWait(c.DRIVER, 0.5).until(
+  #          EC.visibility_of_element_located((By.CSS_SELECTOR, 'div > div > div.dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection.dx-popup-title.dx-has-close-button > div > div.dx-toolbar-after > div > div > div > div > i')))
+  #      print('ALERT PRESENT')
+  #      webdriver.ActionChains(c.DRIVER).send_keys(Keys.ESCAPE).perform()
+  #      sleep(1)
+  #
+  #  except TimeoutException as e:
+  #      print('no alert present')
+
+
+
+
+

@@ -74,8 +74,23 @@ class App(tk.Frame):
         try:
             element = wait_until(seq)
             if seq.type == Type.CLICK:
-                seq.success = True
                 element.click()
+                seq.success = True
+
+                # if console shows error
+                for log in c.DRIVER.get_log('browser'):
+                    if log['level'] == 'SEVERE':
+                        er = f'{seq.attribute_id}: {seq.attribute_value}, err: {log["message"]}'
+                        seq.error = er
+                        print('Err:', seq.error)
+                        seq.success = False
+                        seq.failed = True
+                        break
+                print('success: ', seq.success, ' - failed: ', seq.failed)
+
+
+
+
             elif seq.type == Type.INPUT:
                 if len(seq.insert_text) > 0:
                     seq.success = True

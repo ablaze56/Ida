@@ -21,8 +21,8 @@ OPTIONS = {
         'CFBundleDisplayName': APP_NAME,
         'CFBundleGetInfoString': "UI Testing",
         'CFBundleIdentifier': "si.nb3.ida",
-        'CFBundleVersion': "1.0.0",
-        'CFBundleShortVersionString': "1.0",
+        'CFBundleVersion': "1.1.1",
+        'CFBundleShortVersionString': "1.1",
         'NSHumanReadableCopyright': "Copyright © 2022, Uros Dolzan, All Rights Reserved"
     }
 }
